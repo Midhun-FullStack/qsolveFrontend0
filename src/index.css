@@ -1,0 +1,111 @@
+/* Bootstrap CSS Import */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Q Solve Theme */
+@import './theme.css';
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  margin: auto;
+}
+
+/* Global Styles */
+body {
+  font-family: var(--bs-body-font-family);
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  margin: 0;
+}
+
+/* Utility Classes */
+.min-vh-75 {
+  min-height: 75vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bs-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bs-gray-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bs-gray-500);
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus States */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Loading States */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2.5rem;
+  }
+  
+  .display-5 {
+    font-size: 2rem;
+  }
+  
+  .qsolve-brand {
+    font-size: 1.25rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .btn,
+  .offcanvas {
+    display: none !important;
+  }
+}

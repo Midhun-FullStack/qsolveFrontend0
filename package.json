@@ -1,0 +1,61 @@
+{
+  "name": "09446cdca1f710c4e8efd3be8f2eb971ea21669e3a013520fbdc2d32feff6fde",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@kombai/react-error-boundary": "^1.1.0",
+    "@popperjs/core": "^2.11.8",
+    "@tanstack/react-query": "^5.89.0",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.544.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.9.1",
+    "react-router-dom": "^7.9.1",
+    "react-toastify": "^10.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.7.0",
+    "comment-json": "^4.2.5",
+    "env-cmd": "^11.0.0",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "rollup": "^4.44.1",
+    "vite": "^6.2.0",
+    "vite-plugin-static-copy": "^3.1.2"
+  },
+  "strictDependencies": {
+    "@tanstack/react-query": "^5.89.0",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.1",
+    "@eslint/js": "^9.35.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13"
+  }
+}
