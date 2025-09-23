@@ -84,27 +84,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="row mb-5">
-        <div className="col-12">
-          <h2 className="text-center mb-4">Why Choose Q Solve?</h2>
-          <div className="row">
-            {features.map((feature, index) => (
-              <div key={index} className="col-lg-3 col-md-6 mb-4">
-                <div className="card h-100 text-center border-0 shadow-sm qsolve-card">
-                  <div className="card-body p-4">
-                    <div className="text-primary mb-3">
-                      <feature.icon size={48} />
-                    </div>
-                    <h5 className="card-title">{feature.title}</h5>
-                    <p className="card-text text-muted">{feature.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+     
 
       {/* Stats Section */}
       <div className="row mb-5">
@@ -125,74 +105,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* Subjects Section */}
-      <div className="row mb-5">
-        <div className="col-12">
-          <h2 className="text-center mb-4">Available Subjects</h2>
-          <div className="row">
-            <div className="col-lg-6 mb-4">
-              <div className="card qsolve-subject-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center mb-3">
-                    <BookOpen size={32} className="text-primary me-3" />
-                    <div>
-                      <h5 className="card-title mb-1">Mechanical Engineering</h5>
-                      <p className="card-text text-muted mb-0">
-                        Comprehensive question papers covering all core subjects
-                      </p>
-                    </div>
-                  </div>
-                  <div className="row text-center">
-                    <div className="col-4">
-                      <div className="fw-bold text-success">15</div>
-                      <small className="text-muted">Free Papers</small>
-                    </div>
-                    <div className="col-4">
-                      <div className="fw-bold text-warning">45</div>
-                      <small className="text-muted">Premium Papers</small>
-                    </div>
-                    <div className="col-4">
-                      <div className="fw-bold text-info">1250</div>
-                      <small className="text-muted">Questions</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="col-lg-6 mb-4">
-              <div className="card qsolve-subject-card">
-                <div className="card-body">
-                  <div className="d-flex align-items-center mb-3">
-                    <BookOpen size={32} className="text-primary me-3" />
-                    <div>
-                      <h5 className="card-title mb-1">Civil Engineering</h5>
-                      <p className="card-text text-muted mb-0">
-                        Complete civil engineering question papers and resources
-                      </p>
-                    </div>
-                  </div>
-                  <div className="row text-center">
-                    <div className="col-4">
-                      <div className="fw-bold text-success">12</div>
-                      <small className="text-muted">Free Papers</small>
-                    </div>
-                    <div className="col-4">
-                      <div className="fw-bold text-warning">38</div>
-                      <small className="text-muted">Premium Papers</small>
-                    </div>
-                    <div className="col-4">
-                      <div className="fw-bold text-info">980</div>
-                      <small className="text-muted">Questions</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      
       {/* Contact Section */}
       <div className="row">
         <div className="col-12">

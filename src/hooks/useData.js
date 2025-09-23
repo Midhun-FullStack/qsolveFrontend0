@@ -40,14 +40,14 @@ export const useData = (isAuthenticated) => {
       const data = await dataService.getBundles();
       const transformedBundles = Array.isArray(data) ? data.map(bundle => ({
         id: bundle._id,
-        _id: bundle._id,
+      
         name: bundle.name || bundle.title || `${bundle.departmentID?.department || 'Unknown'} Bundle`,
         title: bundle.title || bundle.name || `${bundle.departmentID?.department || 'Unknown'} Bundle`,
-        description: bundle.description,
+        
         price: bundle.price,
         products: bundle.products,
         departmentID: bundle.departmentID,
-        departmentName: bundle.departmentID?.department || 'Unknown Department'
+       
       })) : [];
       setBundles(transformedBundles);
     } catch (err) {

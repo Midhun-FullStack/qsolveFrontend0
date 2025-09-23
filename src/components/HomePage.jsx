@@ -5,6 +5,8 @@ import { BookOpen, FileDown, Star, Clock, Users, Package } from 'lucide-react';
 
 const HomePage = ({ subjects, bundles = [], user }) => {
   const navigate = useNavigate();
+  console.log('HomePage subjects:', subjects);
+  console.log('HomePage bundles:', bundles);
   // Handle bundle click - navigate to study materials
   const handleBundleClick = (bundle) => {
     navigate('/study-materials');
@@ -108,12 +110,7 @@ const HomePage = ({ subjects, bundles = [], user }) => {
     navigate(`/subject/${subject.id}?type=${contentType}`);
   };
 
-  const getStatsCards = () => [
-    { title: 'Total Downloads', value: '23', icon: FileDown, color: 'primary' },
-    { title: 'Completed Tests', value: '15', icon: BookOpen, color: 'success' },
-    { title: 'Average Score', value: '78.5%', icon: Star, color: 'warning' },
-    { title: 'Study Streak', value: '7 days', icon: Clock, color: 'info' }
-  ];
+ 
 
   return (
     <div className="container-fluid py-4">
@@ -143,50 +140,37 @@ const HomePage = ({ subjects, bundles = [], user }) => {
 
       {/* Subject Cards */}
       <div className="row">
-        {subjects.map((subject) => (
-          <div key={subject.id} className="col-lg-6 ">
+        {bundles.map((bundle) => (
+          <div key={bundle.id} className="col-lg-4 ">
             <div className="card qsolve-subject-card h-100 shadow-sm">
               <div className="card-body">
                 <div className="d-flex justify-content-between  mb-3">
                   <div>
-                    <h5 className="card-title text-primary">{subject.displayName}</h5>
-                    <p className="card-text text-muted">{subject.description}</p>
+                    <h5 className="card-title text-primary">{bundle.name}</h5>
+                    <p className="card-text text-muted">{bundle.price}</p>
                   </div>
-                  <BookOpen size={40} className="text-primary opacity-75" />
+                  
                 </div>
                 
-                <div className="row text-center mb-3">
-                  <div className="col-4">
-                    <div className="fw-bold text-success">{subject.freeContent}</div>
-                    <small className="text-muted">Free</small>
-                  </div>
-                  <div className="col-4">
-                    <div className="fw-bold text-warning">{subject.paidContent}</div>
-                    <small className="text-muted">Premium</small>
-                  </div>
-                  <div className="col-4">
-                    <div className="fw-bold text-info">{subject.totalQuestions}</div>
-                    <small className="text-muted">Questions</small>
-                  </div>
-                </div>
+              
                 
                 <div className="d-grid gap-2">
                   {(selectedFilter === 'all' || selectedFilter === 'free') && (
                     <button
                       className="btn btn-outline-success"
-                      onClick={() => handleSubjectClick(subject, 'free')}
+                      onClick={() =>  handleBundleClick(bundle)}
                     >
                       <FileDown size={16} className="me-2" />
-                      Browse Free Content
+                      sample pages
                     </button>
                   )}
                   {(selectedFilter === 'all' || selectedFilter === 'paid') && (
                     <button
                       className="btn btn-outline-warning"
-                      onClick={() => handleSubjectClick(subject, 'paid')}
+                      onClick={() => handleBundleClick(bundle)}
                     >
                       <Star size={16} className="me-2" />
-                      Browse Premium Content
+                      buy now
                     </button>
                   )}
                 </div>
