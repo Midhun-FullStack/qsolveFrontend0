@@ -5,9 +5,9 @@ import { BookOpen, FileDown, Star, Clock, Users, Package } from 'lucide-react';
 
 const HomePage = ({ subjects, bundles = [], user }) => {
   const navigate = useNavigate();
-  console.log('HomePage subjects:', subjects);
-  console.log('HomePage bundles:', bundles);
-  // Handle bundle click - navigate to study materials
+  console.log(bundles)
+
+
   const handleBundleClick = (bundle) => {
     navigate('/study-materials');
     toast.info(`Viewing study materials`);
@@ -16,82 +16,14 @@ const HomePage = ({ subjects, bundles = [], user }) => {
   const handleViewAllMaterials = () => {
     navigate('/study-materials');
   };
-      {/* Study Materials Section */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card bg-gradient-primary text-white">
-            <div className="card-body">
-              <div className="row align-items-center">
-                <div className="col-md-8">
-                  <h4 className="card-title mb-2">Study Materials</h4>
-                  <p className="card-text mb-3">
-                    Access your purchased bundles and download study materials
-                  </p>
-                  <button 
-                    className="btn btn-light btn-lg"
-                    onClick={handleViewAllMaterials}
-                  >
-                    <Package size={20} className="me-2" />
-                    View All Materials
-                  </button>
-                </div>
-                <div className="col-md-4 text-center">
-                  <Package size={80} className="opacity-75" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Quick Access Bundles */}
-      {bundles.length > 0 && (
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4>Quick Access - Study Bundles</h4>
-              <button 
-                className="btn btn-outline-primary"
-                onClick={handleViewAllMaterials}
-              >
-                View All
-              </button>
-            </div>
-          </div>
-          {bundles.slice(0, 3).map((bundle) => (
-            <div key={bundle._id || bundle.id} className="col-lg-4 mb-3">
-              <div className="card h-100 shadow-sm qsolve-bundle-card">
-                <div className="card-body d-flex flex-column justify-content-between">
-                  <div>
-                    <h5 className="card-title text-primary">
-                      {bundle.name || bundle.title || `${bundle.departmentID?.department || 'Unknown'} Bundle`}
-                    </h5>
-                    {bundle.departmentID?.department && (
-                      <small className="text-primary d-block mb-2">
-                        <BookOpen size={12} className="me-1" />
-                        {bundle.departmentID.department}
-                      </small>
-                    )}
-                    <p className="card-text text-muted">
-                      {bundle.products?.length || 0} study materials
-                    </p>
-                  </div>
-                  <div className="mt-3">
-                    <button className="btn btn-outline-primary w-100" onClick={() => handleBundleClick(bundle)}>
-                      <Package size={16} className="me-2" />
-                      View Materials
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-  const [selectedFilter, setSelectedFilter] = useState('all');
 
-  // Show loading state if subjects are empty
-  if (!subjects || subjects.length === 0) {
+
+
+
+
+
+  if (!bundles || bundles.length === 0) {
     return (
       <div className="container-fluid py-4">
         <div className="row">
@@ -106,16 +38,13 @@ const HomePage = ({ subjects, bundles = [], user }) => {
     );
   }
 
-  const handleSubjectClick = (subject, contentType) => {
-    navigate(`/subject/${subject.id}?type=${contentType}`);
-  };
 
- 
+
 
   return (
     <div className="container-fluid py-4">
-      {/* Welcome Section */}
-      <div className="row mb-4">
+
+      <div className="row mb-5">
         <div className="col-12">
           <div className="card bg-primary text-white">
             <div className="card-body">
@@ -137,50 +66,70 @@ const HomePage = ({ subjects, bundles = [], user }) => {
       </div>
 
 
+  <div className="row">
+  {bundles.map((bundle) => (
+    <div
+      className="col-12 col-md-6 mb-4 shadow-lg"
+      key={bundle.id}
+    >
+      <div className="card h-100 shadow-sm border-0 rounded-3 p-3 d-flex flex-column">
+        
+        {/* Title + Price */}
+        <h5 className="text-primary fw-bold mb-1">
+          {bundle.name}
+        </h5>
+        <p className="text-muted mb-2">₹{bundle.price}</p>
 
-      {/* Subject Cards */}
-      <div className="row">
-        {bundles.map((bundle) => (
-          <div key={bundle.id} className="col-lg-4 ">
-            <div className="card qsolve-subject-card h-100 shadow-sm">
-              <div className="card-body">
-                <div className="d-flex justify-content-between  mb-3">
-                  <div>
-                    <h5 className="card-title text-primary">{bundle.name}</h5>
-                    <p className="card-text text-muted">{bundle.price}</p>
-                  </div>
-                  
-                </div>
-                
-              
-                
-                <div className="d-grid gap-2">
-                  {(selectedFilter === 'all' || selectedFilter === 'free') && (
-                    <button
-                      className="btn btn-outline-success"
-                      onClick={() =>  handleBundleClick(bundle)}
-                    >
-                      <FileDown size={16} className="me-2" />
-                      sample pages
-                    </button>
-                  )}
-                  {(selectedFilter === 'all' || selectedFilter === 'paid') && (
-                    <button
-                      className="btn btn-outline-warning"
-                      onClick={() => handleBundleClick(bundle)}
-                    >
-                      <Star size={16} className="me-2" />
-                      buy now
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+        {/* Rating */}
+        <div className="d-flex align-items-center mb-2">
+          <Star size={16} className="text-warning me-1" />
+          <small className="text-muted">
+            {bundle.rating || "4.5"} / 5
+          </small>
+        </div>
+
+        {/* Description */}
+        <p className="text-secondary small flex-grow-1">
+          {bundle.description ||
+            "This bundle contains high-quality study materials designed to help you prepare effectively."}
+        </p>
+
+        {/* Buttons */}
+        <div className="d-flex gap-2 mt-2">
+          <button
+            className="btn btn-sm btn-outline-primary flex-fill"
+            onClick={() => handleBundleClick(bundle)}
+          >
+            Sample Pages
+          </button>
+          <button
+            className="btn btn-sm btn-primary text-white flex-fill"
+            onClick={() => handleBundleClick(bundle)}
+          >
+            Buy Now
+          </button>
+        </div>
       </div>
+    </div>
+  ))}
+</div>
+<div className="mt-5 p-5 bg-primary text-white rounded-3 text-center">
+  <h3 className="fw-bold text-white mb-3">Keep Learning with QSolve!</h3>
+  <p className="mb-4">
+    Explore more bundles, question papers, and study materials to boost your preparation.
+  </p>
+  <button
+    className="btn btn-light text-primary fw-bold"
+    onClick={handleViewAllMaterials}
+  >
+    View All Materials
+  </button>
+</div>
 
-     
+
+
+
+
     </div>
   );
 };

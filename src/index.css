@@ -109,3 +109,9 @@ body {
     display: none !important;
   }
 }
+
+@media (max-width: 576px) {
+  .card-img-mobile {
+    height: 50px;
+  }
+}

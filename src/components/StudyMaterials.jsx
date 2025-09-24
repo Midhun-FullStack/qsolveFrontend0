@@ -11,6 +11,7 @@ const StudyMaterials = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  console.log("subjects :",bundleSubjects)
 
   // Fetch all bundles on component mount
   useEffect(() => {
@@ -103,7 +104,7 @@ const StudyMaterials = ({ user }) => {
     }
   };
 
-  const handleDownload = async (product) => {
+  const   handleDownload = async (product) => {
     try {
       toast.success(`Downloaded: ${product.title}`);
       // TODO: Implement actual download logic
@@ -272,38 +273,24 @@ const StudyMaterials = ({ user }) => {
                 ) : (
                   <>
                     {/* Subjects in Bundle */}
-                    {bundleSubjects.length > 0 && (
-                      <div className="mb-4">
-                        <h6 className="text-primary mb-3">Subjects Covered</h6>
-                        <div className="row">
-                          {bundleSubjects.map((subject, index) => (
-                            <div key={index} className="col-md-6 mb-2">
-                              <div className="d-flex align-items-center">
-                                <BookOpen size={16} className="text-primary me-2" />
-                                <span>{subject.displayName || subject.name}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  
 
                     {/* Products/Materials in Bundle */}
                     {bundleProducts.length > 0 ? (
                       <div>
                         <h6 className="text-primary mb-3">Study Materials ({bundleProducts.length})</h6>
                         <div className="row">
-                          {bundleProducts.map((product) => (
-                            <div key={product._id} className="col-md-6 mb-3">
+                          {bundleSubjects.map((subject) => (
+                            <div key={subject._id} className="col-md-6 mb-3">
                               <div className="card border">
                                 <div className="card-body">
                                   <div className="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 className="card-title mb-1">{product.title}</h6>
+                                    <h6 className="card-title mb-1">{subject.subject}</h6>
                                     <FileText size={20} className="text-muted" />
                                   </div>
                                   
                                   <p className="card-text text-muted small mb-3">
-                                    {product.description || 'Study material'}
+                                    {subject.description || 'Study material'}
                                   </p>
                                   
                                   <div className="d-flex justify-content-between align-items-center">
