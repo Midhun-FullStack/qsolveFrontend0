@@ -1,22 +1,48 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { BookOpen, Download, FileText, Package, Star, Clock, Users, Filter, Search } from 'lucide-react';
 import { dataService } from '../services/dataService';
+import StudyMaterialsHero from './StudyMaterialsHero';
+import AdvancedFilters from './AdvancedFilters';
+import BundleGrid from './BundleGrid';
+import BundleDetailView from './BundleDetailView';
 
 const StudyMaterials = ({ user }) => {
+  // State management
   const [bundles, setBundles] = useState([]);
+  const [filteredBundles, setFilteredBundles] = useState([]);
   const [selectedBundle, setSelectedBundle] = useState(null);
   const [bundleProducts, setBundleProducts] = useState([]);
   const [bundleSubjects, setBundleSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  console.log("subjects :",bundleSubjects)
+  const [showFilters, setShowFilters] = useState(false);
+  const [showBundleDetail, setShowBundleDetail] = useState(false);
+  const [bookmarkedBundles, setBookmarkedBundles] = useState([]);
+  
+  // Filter state
+  const [filters, setFilters] = useState({
+    category: '',
+    priceRange: '',
+    minRating: '',
+    sortBy: 'popular'
+  });
 
-  // Fetch all bundles on component mount
+  // Stats for hero section
+  const [stats, setStats] = useState({
+    bundles: 0,
+    downloads: 25,
+    students: 10
+  });
+
+  // Fetch bundles on component mount
   useEffect(() => {
     fetchBundles();
   }, []);
+
+  // Apply filters when bundles, search term, or filters change
+  useEffect(() => {
+    applyFilters();
+  }, [bundles, searchTerm, filters]);
 
   const fetchBundles = async () => {
     setLoading(true);
@@ -28,38 +54,158 @@ const StudyMaterials = ({ user }) => {
       const transformedBundles = Array.isArray(data) ? data.map(bundle => ({
         id: bundle._id,
         title: bundle.title || `${bundle.departmentID?.department || 'Unknown'} Bundle`,
+        name: bundle.title || `${bundle.departmentID?.department || 'Unknown'} Bundle`,
         departmentID: bundle.departmentID?._id || bundle.departmentID,
         departmentName: bundle.departmentID?.department || 'Unknown Department',
         price: bundle.price,
         products: bundle.products || [],
-        productCount: bundle.products?.length || 0
+        productCount: bundle.products?.length || 0,
+        rating: 4.5 + Math.random() * 0.5, // Mock rating
+        description: bundle.description || `Comprehensive study materials for ${bundle.departmentID?.department || 'this subject'} with detailed explanations and practice questions.`
       })) : [];
       
       console.log('Transformed bundles:', transformedBundles);
       setBundles(transformedBundles);
+      setStats(prev => ({ ...prev, bundles: transformedBundles.length }));
       
       if (transformedBundles.length === 0) {
-        toast.info('No study materials found. Please check with administrator.');
+        // Fallback to mock data for demo
+        const mockBundles = [
+          {
+            id: 'mock-1',
+            title: 'JEE Main Complete Package',
+            name: 'JEE Main Complete Package',
+            departmentID: 'dept-1',
+            departmentName: 'Engineering',
+            price: 2999,
+            products: [],
+            productCount: 15,
+            rating: 4.8,
+            description: 'Comprehensive JEE Main preparation with 5000+ practice questions, detailed solutions, and expert video explanations.'
+          },
+          {
+            id: 'mock-2',
+            title: 'NEET Biology Mastery',
+            name: 'NEET Biology Mastery',
+            departmentID: 'dept-2',
+            departmentName: 'Medical',
+            price: 1999,
+            products: [],
+            productCount: 12,
+            rating: 4.9,
+            description: 'Complete biology preparation for NEET with detailed notes, diagrams, and practice questions.'
+          },
+          {
+            id: 'mock-3',
+            title: 'Free Mathematics Basics',
+            name: 'Free Mathematics Basics',
+            departmentID: 'dept-3',
+            departmentName: 'Mathematics',
+            price: 0,
+            products: [],
+            productCount: 8,
+            rating: 4.6,
+            description: 'Essential mathematics concepts with step-by-step solutions and practice problems.'
+          },
+          {
+            id: 'mock-4',
+            title: 'Physics Fundamentals',
+            name: 'Physics Fundamentals',
+            departmentID: 'dept-4',
+            departmentName: 'Science',
+            price: 1799,
+            products: [],
+            productCount: 10,
+            rating: 4.7,
+            description: 'Master physics concepts with interactive problems and detailed explanations.'
+          },
+          {
+            id: 'mock-5',
+            title: 'Chemistry Complete Guide',
+            name: 'Chemistry Complete Guide',
+            departmentID: 'dept-5',
+            departmentName: 'Science',
+            price: 1899,
+            products: [],
+            productCount: 14,
+            rating: 4.8,
+            description: 'Comprehensive chemistry preparation with organic, inorganic, and physical chemistry.'
+          },
+          {
+            id: 'mock-6',
+            title: 'Commerce Essentials',
+            name: 'Commerce Essentials',
+            departmentID: 'dept-6',
+            departmentName: 'Commerce',
+            price: 0,
+            products: [],
+            productCount: 6,
+            rating: 4.4,
+            description: 'Essential commerce concepts for board exam preparation.'
+          }
+        ];
+        setBundles(mockBundles);
+        setStats(prev => ({ ...prev, bundles: mockBundles.length }));
+        toast.info('Showing demo study materials');
       }
     } catch (error) {
       console.error('Failed to fetch bundles:', error);
       toast.error(`Failed to load study materials: ${error.message}`);
-      
-      // Fallback to mock data for testing
-      const mockBundles = [
-        {
-          id: 'mock-1',
-          title: 'Sample Engineering Bundle',
-          departmentID: 'dept-1',
-          price: 299,
-          products: [],
-          productCount: 5
-        }
-      ];
-      setBundles(mockBundles);
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...bundles];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(bundle =>
+        bundle.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        bundle.departmentName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Category filter
+    if (filters.category) {
+      filtered = filtered.filter(bundle =>
+        bundle.departmentName.toLowerCase().includes(filters.category.toLowerCase())
+      );
+    }
+
+    // Price range filter
+    if (filters.priceRange) {
+      if (filters.priceRange === 'free') {
+        filtered = filtered.filter(bundle => bundle.price === 0);
+      } else if (filters.priceRange === '0-500') {
+        filtered = filtered.filter(bundle => bundle.price > 0 && bundle.price <= 500);
+      } else if (filters.priceRange === '500-1000') {
+        filtered = filtered.filter(bundle => bundle.price > 500 && bundle.price <= 1000);
+      } else if (filters.priceRange === '1000-2000') {
+        filtered = filtered.filter(bundle => bundle.price > 1000 && bundle.price <= 2000);
+      } else if (filters.priceRange === '2000+') {
+        filtered = filtered.filter(bundle => bundle.price > 2000);
+      }
+    }
+
+    // Rating filter
+    if (filters.minRating) {
+      filtered = filtered.filter(bundle => bundle.rating >= filters.minRating);
+    }
+
+    // Sort
+    if (filters.sortBy === 'newest') {
+      filtered.sort((a, b) => b.id.localeCompare(a.id));
+    } else if (filters.sortBy === 'price-asc') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (filters.sortBy === 'price-desc') {
+      filtered.sort((a, b) => b.price - a.price);
+    } else if (filters.sortBy === 'rating') {
+      filtered.sort((a, b) => b.rating - a.rating);
+    }
+
+    setFilteredBundles(filtered);
   };
 
   const handleBundleSelect = async (bundle) => {
@@ -79,261 +225,127 @@ const StudyMaterials = ({ user }) => {
       console.log('Subjects data:', subjectsData);
       setBundleSubjects(Array.isArray(subjectsData) ? subjectsData : []);
       
+      setShowBundleDetail(true);
       toast.success(`Loaded materials for ${bundle.title}`);
     } catch (error) {
       console.error('Failed to fetch bundle details:', error);
-      toast.error(`Failed to load bundle details: ${error.message}`);
       
-      // Set mock data for testing
-      setBundleProducts([
+      // Set mock data for demo
+      const mockSubjects = [
         {
-          _id: 'mock-product-1',
-          title: 'Sample Study Material',
-          description: 'This is a sample study material for testing',
-          fileUrl: '/sample.pdf'
-        }
-      ]);
-      setBundleSubjects([
+          _id: 'subject-1',
+          subject: `${bundle.departmentName} Fundamentals`,
+          description: 'Core concepts and fundamentals'
+        },
         {
-          name: 'Sample Subject',
-          displayName: 'Sample Engineering Subject'
+          _id: 'subject-2',
+          subject: `Advanced ${bundle.departmentName}`,
+          description: 'Advanced topics and problem solving'
+        },
+        {
+          _id: 'subject-3',
+          subject: `${bundle.departmentName} Practice Papers`,
+          description: 'Previous year questions and mock tests'
         }
-      ]);
+      ];
+      setBundleSubjects(mockSubjects);
+      setBundleProducts([]);
+      setShowBundleDetail(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const   handleDownload = async (product) => {
+  const handleBundlePreview = (bundle) => {
+    toast.info(`Previewing ${bundle.title}`);
+    handleBundleSelect(bundle);
+  };
+
+  const handleDownload = async (material) => {
     try {
-      toast.success(`Downloaded: ${product.title}`);
+      toast.success(`Downloaded: ${material.subject || material.title}`);
       // TODO: Implement actual download logic
     } catch (error) {
       toast.error('Download failed');
     }
   };
 
-  const filteredBundles = bundles.filter(bundle => {
-    const matchesSearch = bundle.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterType === 'all' || 
-      (filterType === 'free' && bundle.price === 0) ||
-      (filterType === 'paid' && bundle.price > 0);
-    
-    return matchesSearch && matchesFilter;
-  });
+  const handlePurchase = (bundle) => {
+    toast.info(`Redirecting to purchase ${bundle.title}`);
+    // TODO: Implement purchase logic
+  };
 
-  if (loading && bundles.length === 0) {
-    return (
-      <div className="container-fluid py-4">
-        <div className="row">
-          <div className="col-12 text-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <p className="mt-3 text-muted">Loading study materials...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleBookmarkToggle = (bundle) => {
+    const bundleId = bundle.id || bundle._id;
+    setBookmarkedBundles(prev => {
+      if (prev.includes(bundleId)) {
+        toast.info('Removed from bookmarks');
+        return prev.filter(id => id !== bundleId);
+      } else {
+        toast.success('Added to bookmarks');
+        return [...prev, bundleId];
+      }
+    });
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: prev[key] === value ? '' : value
+    }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      category: '',
+      priceRange: '',
+      minRating: '',
+      sortBy: 'popular'
+    });
+    setSearchTerm('');
+  };
 
   return (
-    <div className="container-fluid py-4">
-      {/* Header */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h2 className="mb-1">Study Materials</h2>
-              <p className="text-muted mb-0">Access your purchased bundles and study materials</p>
-            </div>
-            <Package size={40} className="text-primary opacity-75" />
-          </div>
-        </div>
-      </div>
+    <div className="study-materials-modern">
+      {/* Hero Section */}
+      <StudyMaterialsHero
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onFilterClick={() => setShowFilters(true)}
+        stats={stats}
+      />
 
-      {/* Search and Filter */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-body">
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <Search size={18} />
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search study materials..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                <div className="col-md-3">
-                  <select
-                    className="form-select"
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                  >
-                    <option value="all">All Materials</option>
-                    <option value="free">Free</option>
-                    <option value="paid">Paid</option>
-                  </select>
-                </div>
-                
-                <div className="col-md-3">
-                  <div className="text-muted small">
-                    {filteredBundles.length} bundles available
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Advanced Filters Modal */}
+      <AdvancedFilters
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClearFilters={handleClearFilters}
+      />
 
-      <div className="row">
-        {/* Bundles List */}
-        <div className="col-lg-4 mb-4">
-          <div className="card h-100">
-            <div className="card-header">
-              <h5 className="mb-0">Available Bundles</h5>
-            </div>
-            <div className="card-body p-0">
-              <div className="list-group list-group-flush" style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                {filteredBundles.map((bundle) => (
-                  <button
-                    key={bundle.id}
-                    className={`list-group-item list-group-item-action ${
-                      selectedBundle?.id === bundle.id ? 'active' : ''
-                    }`}
-                    onClick={() => handleBundleSelect(bundle)}
-                  >
-                    <div className="d-flex justify-content-between align-items-start">
-                      <div className="flex-grow-1">
-                        <h6 className="mb-1">{bundle.title}</h6>
-                        <small className="text-primary d-block">
-                          <BookOpen size={12} className="me-1" />
-                          {bundle.departmentName}
-                        </small>
-                        <small className="text-muted">
-                          {bundle.productCount} materials
-                        </small>
-                      </div>
-                      <div className="text-end">
-                        {bundle.price === 0 ? (
-                          <span className="badge bg-success">Free</span>
-                        ) : (
-                          <span className="fw-bold text-warning">₹{bundle.price}</span>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Bundle Grid */}
+      <BundleGrid
+        bundles={filteredBundles}
+        loading={loading}
+        onBundleSelect={handleBundleSelect}
+        onBundlePreview={handleBundlePreview}
+        bookmarkedBundles={bookmarkedBundles}
+        onBookmarkToggle={handleBookmarkToggle}
+      />
 
-        {/* Bundle Details */}
-        <div className="col-lg-8">
-          {selectedBundle ? (
-            <div className="card">
-              <div className="card-header">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h5 className="mb-1">{selectedBundle.title}</h5>
-                    <small className="text-muted">
-                      <BookOpen size={14} className="me-1" />
-                      {selectedBundle.departmentName}
-                    </small>
-                  </div>
-                  <div>
-                    {selectedBundle.price === 0 ? (
-                      <span className="badge bg-success fs-6">Free Bundle</span>
-                    ) : (
-                      <span className="badge bg-warning fs-6">₹{selectedBundle.price}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="card-body">
-                {loading ? (
-                  <div className="text-center py-4">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                    <p className="mt-2 text-muted">Loading bundle contents...</p>
-                  </div>
-                ) : (
-                  <>
-                    {/* Subjects in Bundle */}
-                  
-
-                    {/* Products/Materials in Bundle */}
-                    {bundleProducts.length > 0 ? (
-                      <div>
-                        <h6 className="text-primary mb-3">Study Materials ({bundleProducts.length})</h6>
-                        <div className="row">
-                          {bundleSubjects.map((subject) => (
-                            <div key={subject._id} className="col-md-6 mb-3">
-                              <div className="card border">
-                                <div className="card-body">
-                                  <div className="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 className="card-title mb-1">{subject.subject}</h6>
-                                    <FileText size={20} className="text-muted" />
-                                  </div>
-                                  
-                                  <p className="card-text text-muted small mb-3">
-                                    {subject.description || 'Study material'}
-                                  </p>
-                                  
-                                  <div className="d-flex justify-content-between align-items-center">
-                                    <small className="text-muted">
-                                      <Clock size={14} className="me-1" />
-                                      PDF Document
-                                    </small>
-                                    <button
-                                      className="btn btn-primary btn-sm"
-                                      onClick={() => handleDownload(product)}
-                                    >
-                                      <Download size={14} className="me-1" />
-                                      Download
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-4">
-                        <FileText size={48} className="text-muted mb-3" />
-                        <h6 className="text-muted">No materials found</h6>
-                        <p className="text-muted small">This bundle doesn't contain any materials yet.</p>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="card">
-              <div className="card-body text-center py-5">
-                <Package size={64} className="text-muted mb-3" />
-                <h5 className="text-muted">Select a Bundle</h5>
-                <p className="text-muted">Choose a bundle from the left to view its study materials</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Bundle Detail View */}
+      <BundleDetailView
+        bundle={selectedBundle}
+        materials={bundleProducts}
+        subjects={bundleSubjects}
+        isOpen={showBundleDetail}
+        onClose={() => setShowBundleDetail(false)}
+        onDownload={handleDownload}
+        onPurchase={handlePurchase}
+        isBookmarked={bookmarkedBundles.includes(selectedBundle?.id || selectedBundle?._id)}
+        onBookmarkToggle={handleBookmarkToggle}
+      />
     </div>
   );
 };

@@ -1,87 +1,100 @@
-/* Q Solve Application Theme - Bootstrap CSS Variables */
+/* Q Solve Application Theme - Modern 2025 Design */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Primary Brand Colors */
-  --bs-primary: #007bff;
-  --bs-primary-text-emphasis: #004085;
-  --bs-primary-bg-subtle: #cce7ff;
-  --bs-primary-border-subtle: #99d3ff;
+  /* Modern Color Palette - HSL Based */
+  --bs-primary: hsl(220, 100%, 50%);
+  --bs-primary-light: hsl(220, 100%, 60%);
+  --bs-primary-dark: hsl(220, 100%, 40%);
+  --bs-primary-text-emphasis: hsl(220, 100%, 25%);
+  --bs-primary-bg-subtle: hsl(220, 100%, 95%);
+  --bs-primary-border-subtle: hsl(220, 100%, 85%);
+  
+  /* Gradient Colors */
+  --gradient-primary: linear-gradient(135deg, hsl(220, 100%, 50%), hsl(260, 100%, 60%));
+  --gradient-secondary: linear-gradient(135deg, hsl(300, 100%, 60%), hsl(220, 100%, 50%));
+  --gradient-aurora: linear-gradient(135deg, hsl(220, 100%, 50%), hsl(260, 100%, 60%), hsl(300, 100%, 60%));
   
   /* Secondary Colors */
-  --bs-secondary: #6c757d;
-  --bs-secondary-text-emphasis: #495057;
-  --bs-secondary-bg-subtle: #e9ecef;
-  --bs-secondary-border-subtle: #dee2e6;
+  --bs-secondary: hsl(210, 15%, 45%);
+  --bs-secondary-text-emphasis: hsl(210, 15%, 25%);
+  --bs-secondary-bg-subtle: hsl(210, 15%, 95%);
+  --bs-secondary-border-subtle: hsl(210, 15%, 85%);
   
   /* Success Colors */
-  --bs-success: #28a745;
-  --bs-success-text-emphasis: #155724;
-  --bs-success-bg-subtle: #d4edda;
-  --bs-success-border-subtle: #c3e6cb;
+  --bs-success: hsl(140, 70%, 45%);
+  --bs-success-text-emphasis: hsl(140, 70%, 25%);
+  --bs-success-bg-subtle: hsl(140, 70%, 95%);
+  --bs-success-border-subtle: hsl(140, 70%, 85%);
   
   /* Danger Colors */
-  --bs-danger: #dc3545;
-  --bs-danger-text-emphasis: #721c24;
-  --bs-danger-bg-subtle: #f8d7da;
-  --bs-danger-border-subtle: #f5c6cb;
+  --bs-danger: hsl(0, 75%, 55%);
+  --bs-danger-text-emphasis: hsl(0, 75%, 35%);
+  --bs-danger-bg-subtle: hsl(0, 75%, 95%);
+  --bs-danger-border-subtle: hsl(0, 75%, 85%);
   
   /* Warning Colors */
-  --bs-warning: #ffc107;
-  --bs-warning-text-emphasis: #856404;
-  --bs-warning-bg-subtle: #fff3cd;
-  --bs-warning-border-subtle: #ffecb5;
+  --bs-warning: hsl(45, 100%, 55%);
+  --bs-warning-text-emphasis: hsl(45, 100%, 35%);
+  --bs-warning-bg-subtle: hsl(45, 100%, 95%);
+  --bs-warning-border-subtle: hsl(45, 100%, 85%);
   
   /* Info Colors */
-  --bs-info: #17a2b8;
-  --bs-info-text-emphasis: #0c5460;
-  --bs-info-bg-subtle: #d1ecf1;
-  --bs-info-border-subtle: #bee5eb;
+  --bs-info: hsl(190, 75%, 45%);
+  --bs-info-text-emphasis: hsl(190, 75%, 25%);
+  --bs-info-bg-subtle: hsl(190, 75%, 95%);
+  --bs-info-border-subtle: hsl(190, 75%, 85%);
   
   /* Neutral Colors */
-  --bs-light: #f8f9fa;
-  --bs-dark: #343a40;
+  --bs-light: hsl(210, 20%, 98%);
+  --bs-dark: hsl(210, 20%, 15%);
   --bs-white: #ffffff;
   --bs-black: #000000;
-  --bs-gray-100: #f8f9fa;
-  --bs-gray-200: #e9ecef;
-  --bs-gray-300: #dee2e6;
-  --bs-gray-400: #ced4da;
-  --bs-gray-500: #adb5bd;
-  --bs-gray-600: #6c757d;
-  --bs-gray-700: #495057;
-  --bs-gray-800: #343a40;
-  --bs-gray-900: #212529;
+  --bs-gray-50: hsl(210, 20%, 98%);
+  --bs-gray-100: hsl(210, 20%, 95%);
+  --bs-gray-200: hsl(210, 20%, 90%);
+  --bs-gray-300: hsl(210, 20%, 85%);
+  --bs-gray-400: hsl(210, 20%, 70%);
+  --bs-gray-500: hsl(210, 20%, 55%);
+  --bs-gray-600: hsl(210, 20%, 40%);
+  --bs-gray-700: hsl(210, 20%, 25%);
+  --bs-gray-800: hsl(210, 20%, 15%);
+  --bs-gray-900: hsl(210, 20%, 10%);
   
-  /* Typography */
+  /* Modern Typography */
+  --bs-font-display: 'Space Grotesk', 'Inter', sans-serif;
   --bs-font-sans-serif: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --bs-font-monospace: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
-  --bs-body-line-height: 1.5;
-  --bs-body-color: #212529;
-  --bs-body-bg: #ffffff;
-  --bs-heading-color: #212529;
+  --bs-body-line-height: 1.6;
+  --bs-body-color: var(--bs-gray-800);
+  --bs-body-bg: var(--bs-white);
+  --bs-heading-color: var(--bs-gray-900);
   
   /* Links */
   --bs-link-color: var(--bs-primary);
-  --bs-link-hover-color: #0056b3;
+  --bs-link-hover-color: var(--bs-primary-dark);
   --bs-link-decoration: none;
   
-  /* Borders */
+  /* Modern Borders & Radius */
   --bs-border-width: 1px;
   --bs-border-style: solid;
-  --bs-border-color: #dee2e6;
-  --bs-border-radius: 0.375rem;
-  --bs-border-radius-sm: 0.25rem;
-  --bs-border-radius-lg: 0.5rem;
-  --bs-border-radius-xl: 1rem;
+  --bs-border-color: var(--bs-gray-200);
+  --bs-border-radius: 1rem;
+  --bs-border-radius-sm: 0.75rem;
+  --bs-border-radius-lg: 1.5rem;
+  --bs-border-radius-xl: 2rem;
   --bs-border-radius-pill: 50rem;
-  
-  /* Shadows */
-  --bs-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+  /* Modern Shadows */
+  --bs-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --bs-box-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.06);
+  --bs-box-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --bs-box-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
   
   /* Focus Ring */
   --bs-focus-ring-width: 0.25rem;
@@ -90,36 +103,36 @@
   
   /* Component Specific Variables */
   
-  /* Buttons */
-  --bs-btn-padding-x: 0.75rem;
-  --bs-btn-padding-y: 0.375rem;
-  --bs-btn-font-weight: 400;
+  /* Modern Buttons */
+  --bs-btn-padding-x: 1.5rem;
+  --bs-btn-padding-y: 0.75rem;
+  --bs-btn-font-weight: 500;
   --bs-btn-border-radius: var(--bs-border-radius);
   --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.5);
   
-  /* Cards */
-  --bs-card-border-radius: var(--bs-border-radius);
-  --bs-card-border-color: rgba(0, 0, 0, 0.125);
-  --bs-card-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --bs-card-spacer-y: 1rem;
-  --bs-card-spacer-x: 1rem;
+  /* Modern Cards */
+  --bs-card-border-radius: var(--bs-border-radius-lg);
+  --bs-card-border-color: transparent;
+  --bs-card-box-shadow: var(--bs-box-shadow);
+  --bs-card-spacer-y: 1.5rem;
+  --bs-card-spacer-x: 1.5rem;
   
   /* Forms */
   --bs-form-control-bg: var(--bs-body-bg);
-  --bs-form-control-border-color: var(--bs-border-color);
-  --bs-form-control-focus-border-color: #86b7fe;
+  --bs-form-control-border-color: var(--bs-gray-300);
+  --bs-form-control-focus-border-color: var(--bs-primary);
   --bs-form-control-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   
   /* Navigation */
-  --bs-navbar-padding-x: 1rem;
-  --bs-navbar-padding-y: 0.5rem;
-  --bs-navbar-brand-font-size: 1.25rem;
-  --bs-nav-link-padding-x: 1rem;
-  --bs-nav-link-padding-y: 0.5rem;
+  --bs-navbar-padding-x: 1.5rem;
+  --bs-navbar-padding-y: 1rem;
+  --bs-navbar-brand-font-size: 1.5rem;
+  --bs-nav-link-padding-x: 1.25rem;
+  --bs-nav-link-padding-y: 0.75rem;
   
   /* Modal */
-  --bs-modal-border-radius: var(--bs-border-radius-lg);
-  --bs-modal-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-modal-border-radius: var(--bs-border-radius-xl);
+  --bs-modal-box-shadow: var(--bs-box-shadow-xl);
   
   /* Offcanvas */
   --bs-offcanvas-width: 400px;
@@ -127,57 +140,251 @@
   --bs-offcanvas-border-color: var(--bs-border-color);
 }
 
-/* Custom Q Solve Styles */
+/* Modern Q Solve Styles */
 .qsolve-brand {
+  font-family: var(--bs-font-display);
   font-weight: 700;
   color: var(--bs-primary);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* Modern Card Styles */
 .qsolve-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--bs-border-radius-lg);
 }
 
 .qsolve-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--bs-box-shadow-xl);
+  background: rgba(255, 255, 255, 0.95);
 }
 
+/* Glassmorphism Effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern Buttons */
 .qsolve-btn-primary {
-  background: linear-gradient(135deg, var(--bs-primary), #0056b3);
+  background: var(--gradient-primary);
   border: none;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: var(--bs-border-radius);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.qsolve-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.qsolve-btn-primary:hover::before {
+  left: 100%;
 }
 
 .qsolve-btn-primary:hover {
-  background: linear-gradient(135deg, #0056b3, var(--bs-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.qsolve-splash {
-  background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+.qsolve-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--bs-primary);
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qsolve-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.qsolve-hero {
+  background: var(--gradient-aurora);
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
-.qsolve-subject-card {
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
+.qsolve-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
 }
 
-.qsolve-subject-card:hover {
-  border-color: var(--bs-primary);
-  transform: scale(1.02);
+.qsolve-hero-content {
+  position: relative;
+  z-index: 2;
 }
 
-.qsolve-paper-card {
-  border-left: 4px solid var(--bs-primary);
+/* Floating Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
 }
 
-.qsolve-free-badge {
-  background-color: var(--bs-success);
-  color: white;
+.floating-element {
+  animation: float 6s ease-in-out infinite;
 }
 
-.qsolve-paid-badge {
-  background-color: var(--bs-warning);
-  color: var(--bs-dark);
+.floating-element:nth-child(2) {
+  animation-delay: -2s;
+}
+
+.floating-element:nth-child(3) {
+  animation-delay: -4s;
+}
+
+/* Modern Typography */
+.display-1-modern {
+  font-family: var(--bs-font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.1;
+  background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stats Counter Animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-counter {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+/* Testimonial Cards */
+.qsolve-testimonial-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.qsolve-testimonial-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.qsolve-testimonial-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--bs-box-shadow-xl);
+}
+
+.qsolve-testimonial-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bs-primary);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Bundle Cards Modern Style */
+.bundle-card-modern {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--bs-border-radius-lg);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.bundle-card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.bundle-card-modern:hover::before {
+  opacity: 0.05;
+}
+
+.bundle-card-modern:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .display-1-modern {
+    font-size: 2.5rem;
+  }
+  
+  .qsolve-brand {
+    font-size: 1.5rem;
+  }
+  
+  .qsolve-btn-primary {
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bs-body-bg: var(--bs-gray-900);
+    --bs-body-color: var(--bs-gray-100);
+    --bs-border-color: var(--bs-gray-700);
+  }
+  
+  .qsolve-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }

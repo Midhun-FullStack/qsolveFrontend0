@@ -24,6 +24,33 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
     }
   ];
 
+  const testimonials = [
+    {
+      name: 'Sarah Johnson',
+      role: 'Mechanical Engineering Student',
+      quote: 'Q Solve helped me ace my finals with its comprehensive question bank. Highly recommended!',
+      avatar: 'https://via.placeholder.com/60x60/007bff/ffffff?text=SJ'
+    },
+    {
+      name: 'Michael Chen',
+      role: 'Civil Engineering Graduate',
+      quote: 'The expert-verified content gave me the confidence I needed for my engineering exams.',
+      avatar: 'https://via.placeholder.com/60x60/28a745/ffffff?text=MC'
+    },
+    {
+      name: 'Priya Patel',
+      role: 'Aspiring Engineer',
+      quote: 'Amazing platform! The community support and quality materials made learning enjoyable.',
+      avatar: 'https://via.placeholder.com/60x60/ffc107/000000?text=PP'
+    },
+    {
+      name: 'David Kumar',
+      role: 'Engineering Professor',
+      quote: 'I recommend Q Solve to all my students. It\'s a game-changer for exam preparation.',
+      avatar: 'https://via.placeholder.com/60x60/dc3545/ffffff?text=DK'
+    }
+  ];
+
   return (
     <div className="min-vh-100">
       {/* Navigation */}
@@ -42,11 +69,11 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-light py-5">
+      <section className="py-6" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)' }}>
         <div className="container">
           <div className="row align-items-center min-vh-75">
             <div className="col-lg-6">
-              <h1 className="display-4 fw-bold mb-4">
+              <h1 className="display-3 fw-bolder mb-4">
                 Master Engineering with 
                 <span className="text-primary"> Q Solve</span>
               </h1>
@@ -109,7 +136,7 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
       </section>
 
       {/* Features Section */}
-      <section className="py-5">
+      <section className="py-7">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="display-5 fw-bold">Why Choose Q Solve?</h2>
@@ -126,6 +153,42 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                     </div>
                     <h5 className="card-title">{feature.title}</h5>
                     <p className="card-text text-muted">{feature.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-5 bg-white">
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2 className="display-5 fw-bold">What Our Students Say</h2>
+            <p className="lead text-muted">Hear from students who have transformed their engineering careers with Q Solve</p>
+          </div>
+
+          <div className="row">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="col-lg-3 col-md-6 mb-4">
+                <div className="qsolve-testimonial-card h-100 p-4">
+                  <div className="text-center mb-3">
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="qsolve-testimonial-avatar mb-3"
+                    />
+                    <h6 className="fw-bold">{testimonial.name}</h6>
+                    <small className="text-muted">{testimonial.role}</small>
+                  </div>
+                  <blockquote className="blockquote text-center">
+                    <p className="mb-0">"{testimonial.quote}"</p>
+                  </blockquote>
+                  <div className="text-center mt-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} className="text-warning me-1" fill="currentColor" />
+                    ))}
                   </div>
                 </div>
               </div>
