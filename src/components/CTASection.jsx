@@ -14,7 +14,7 @@ const CTASection = ({ onViewAllMaterials }) => {
     <section className="py-5 position-relative overflow-hidden" style={{
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     }}>
-      {/* Animated Background */}
+      
       <div className="position-absolute w-100 h-100">
         <div className="floating-element position-absolute" style={{
           top: '10%',

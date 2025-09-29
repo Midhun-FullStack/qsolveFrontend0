@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import HeroSection from './HeroSection';
+
 import FeaturedBundles from './FeaturedBundles';
-import TestimonialsSection from './TestimonialsSection';
+
 import CTASection from './CTASection';
 
 const HomePage = ({ subjects, bundles = [], user }) => {
@@ -30,7 +30,7 @@ const HomePage = ({ subjects, bundles = [], user }) => {
   return (
     <div className="homepage-modern">
       {/* Hero Section */}
-      <HeroSection onGetStarted={handleGetStarted} />
+      
 
       {/* Featured Bundles */}
       <FeaturedBundles 
@@ -39,7 +39,7 @@ const HomePage = ({ subjects, bundles = [], user }) => {
       />
 
       {/* Testimonials */}
-      <TestimonialsSection />
+      
 
       {/* Call to Action */}
       <CTASection onViewAllMaterials={handleViewAllMaterials} />

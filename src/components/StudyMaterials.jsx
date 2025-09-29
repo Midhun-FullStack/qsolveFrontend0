@@ -324,28 +324,7 @@ const StudyMaterials = ({ user }) => {
         onClearFilters={handleClearFilters}
       />
 
-      {/* Bundle Grid */}
-      <BundleGrid
-        bundles={filteredBundles}
-        loading={loading}
-        onBundleSelect={handleBundleSelect}
-        onBundlePreview={handleBundlePreview}
-        bookmarkedBundles={bookmarkedBundles}
-        onBookmarkToggle={handleBookmarkToggle}
-      />
-
-      {/* Bundle Detail View */}
-      <BundleDetailView
-        bundle={selectedBundle}
-        materials={bundleProducts}
-        subjects={bundleSubjects}
-        isOpen={showBundleDetail}
-        onClose={() => setShowBundleDetail(false)}
-        onDownload={handleDownload}
-        onPurchase={handlePurchase}
-        isBookmarked={bookmarkedBundles.includes(selectedBundle?.id || selectedBundle?._id)}
-        onBookmarkToggle={handleBookmarkToggle}
-      />
+    
     </div>
   );
 };

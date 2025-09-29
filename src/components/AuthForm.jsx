@@ -117,11 +117,11 @@ const AuthForm = ({ formType, onSubmit }) => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-primary">
       <div className="row w-100 justify-content-center">
         <div className="col-md-6 col-lg-4">
           <div className="card shadow-lg border-0">
-            <div className="card-body p-4">
+            <div className="card-body p-4 rounded bg-white text-dark">
               <button 
                 type="button" 
                 className="btn btn-link p-0 mb-3 text-decoration-none"
@@ -147,7 +147,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                       </span>
                       <input
                         type="text"
-                        className={`form-control ${validationErrors.name ? 'is-invalid' : ''}`}
+                        className={`form-control ${validationErrors.name ? 'is-invalid' : ''} bg-white`}
                         id="name"
                         name="name"
                         value={formData.name}
@@ -169,7 +169,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                     </span>
                     <input
                       type="email"
-                      className={`form-control ${validationErrors.email ? 'is-invalid' : ''}`}
+                      className={`form-control ${validationErrors.email ? 'is-invalid' : ''} bg-white`}
                       id="email"
                       name="email"
                       value={formData.email}
@@ -191,7 +191,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                       </span>
                       <input
                         type={showPassword ? 'text' : 'password'}
-                        className={`form-control ${validationErrors.password ? 'is-invalid' : ''}`}
+                        className={`form-control ${validationErrors.password ? 'is-invalid' : ''} bg-white`}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -221,7 +221,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                       </span>
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
-                        className={`form-control ${validationErrors.confirmPassword ? 'is-invalid' : ''}`}
+                        className={`form-control ${validationErrors.confirmPassword ? 'is-invalid' : ''} bg-white`}
                         id="confirmPassword"
                         name="confirmPassword"
                         value={formData.confirmPassword}

@@ -36,7 +36,7 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
           {bundles.slice(0, 3).map((bundle, index) => (
             <div 
               key={bundle.id} 
-              className={`col-lg-${index === 0 ? '6' : '3'} col-md-6`}
+              className={`col-lg-${index === 0 ? '4' : '4'} col-md-6`}
             >
               <div className={`bundle-card-modern h-100 p-4 ${index === 0 ? 'border-primary border-2' : ''}`}>
                 {index === 0 && (
