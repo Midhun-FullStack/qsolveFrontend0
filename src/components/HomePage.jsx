@@ -5,12 +5,13 @@ import FeaturedBundles from './FeaturedBundles';
 
 import CTASection from './CTASection';
 
+
 const HomePage = ({ subjects, bundles = [], user }) => {
   const navigate = useNavigate();
 
   const handleBundleClick = (bundle) => {
-    navigate('/study-materials');
-    toast.info(`Viewing study materials for ${bundle.name}`);
+    navigate(`/study-materials?bundle=${bundle.id || bundle._id}`);
+    toast.info(`Viewing ${bundle.name}`);
   };
 
   const handleViewAllMaterials = () => {
@@ -29,20 +30,14 @@ const HomePage = ({ subjects, bundles = [], user }) => {
 
   return (
     <div className="homepage-modern">
-      {/* Hero Section */}
       
-
-      {/* Featured Bundles */}
       <FeaturedBundles 
         bundles={bundles} 
         onBundleClick={handleBundleClick} 
       />
-
-      {/* Testimonials */}
-      
-
-      {/* Call to Action */}
       <CTASection onViewAllMaterials={handleViewAllMaterials} />
+      
+       
     </div>
   );
 };

@@ -47,5 +47,17 @@ export const dataService = {
   getSubjectsByDepartment: async (departmentID) => {
     const response = await api.post('/bundles/getSubjectByDepartment', { departmentID });
     return response.data;
+  },
+
+  // Create payment intent for bundle purchase
+  createPaymentIntent: async (bundleId) => {
+    const response = await api.post('/payments/create-payment-intent', { bundleId });
+    return response.data;
+  },
+
+  // Confirm payment after successful Stripe payment
+  confirmPayment: async (bundleId) => {
+    const response = await api.post('/payments/confirm-payment', { bundleId, payment: true });
+    return response.data;
   }
 };

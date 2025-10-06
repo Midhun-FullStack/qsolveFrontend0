@@ -1,5 +1,7 @@
 import { Star, Download, Clock, Users, Eye, Bookmark, FileText, CircleArrowDown } from 'lucide-react';
 import { useState } from 'react';
+import { dataService } from '../services/dataService';
+import { toast } from 'react-toastify';
 
 const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -14,17 +16,39 @@ const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) =
   };
 
   return (
-    <div className="bundle-card-modern h-100 p-4 position-relative" onClick={() => onSelect(bundle)}>
+    <div
+      className="h-100 p-4 position-relative"
+      onClick={() => onSelect(bundle)}
+      style={{
+        background: 'white',
+        border: '1px solid rgba(26, 54, 93, 0.1)',
+        borderRadius: '1rem',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: 'pointer'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-8px)';
+        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.12)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+      }}
+    >
       {/* Bookmark Button */}
       <button
-        className={`position-absolute top-0 end-0 m-3 btn btn-sm rounded-circle ${
-          isBookmarked ? 'btn-warning' : 'btn-outline-light'
-        }`}
+        className="position-absolute top-0 end-0 m-3 btn btn-sm rounded-circle"
         onClick={(e) => {
           e.stopPropagation();
           onBookmark(bundle);
         }}
-        style={{ zIndex: 2 }}
+        style={{
+          zIndex: 2,
+          background: isBookmarked ? '#FFD700' : 'rgba(26, 54, 93, 0.1)',
+          border: 'none',
+          color: isBookmarked ? '#1a365d' : '#4a5568'
+        }}
       >
         <Bookmark size={14} fill={isBookmarked ? 'currentColor' : 'none'} />
       </button>
@@ -32,17 +56,27 @@ const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) =
       {/* Bundle Header */}
       <div className="mb-3">
         <div className="d-flex justify-content-between align-items-start mb-2">
-          <h5 className="fw-bold text-primary mb-0 flex-grow-1 me-2">
+          <h5 className="fw-bold mb-0 flex-grow-1 me-2" style={{ color: '#1a365d' }}>
             {bundle.title || bundle.name}
           </h5>
           {bundle.price === 0 ? (
-            <span className="badge bg-success px-2 py-1 rounded-pill">Free</span>
+            <span
+              className="badge px-2 py-1 rounded-pill"
+              style={{ background: '#FFD700', color: '#1a365d', fontWeight: '600' }}
+            >
+              Free
+            </span>
           ) : (
-            <span className="badge bg-primary px-2 py-1 rounded-pill">Premium</span>
+            <span
+              className="badge px-2 py-1 rounded-pill"
+              style={{ background: 'linear-gradient(135deg, #1a365d, #2d3748)', color: 'white', fontWeight: '600' }}
+            >
+              Premium
+            </span>
           )}
         </div>
-        
-        <small className="text-muted d-block mb-2">
+
+        <small className="d-block mb-2" style={{ color: '#4a5568' }}>
           {bundle.departmentName || 'General Studies'}
         </small>
 
@@ -50,86 +84,98 @@ const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) =
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div className="d-flex align-items-center">
             {bundle.price === 0 ? (
-              <span className="h5 fw-bold text-success mb-0">Free</span>
+              <span className="h5 fw-bold mb-0" style={{ color: '#FFD700' }}>Free</span>
             ) : (
               <div className="d-flex align-items-center">
-                <span className="h5 fw-bold text-dark mb-0">₹{bundle.price}</span>
-                <small className="text-decoration-line-through text-muted ms-2">
+                <span className="h5 fw-bold mb-0" style={{ color: '#1a365d' }}>₹{bundle.price}</span>
+                <small className="text-decoration-line-through ms-2" style={{ color: '#a0aec0' }}>
                   ₹{Math.round(bundle.price * 1.4)}
                 </small>
               </div>
             )}
           </div>
-          
+
           <div className="d-flex align-items-center">
             <div className="d-flex me-1">
               {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  size={12} 
-                  className={`${i < Math.floor(bundle.rating || 4.5) ? 'text-warning' : 'text-muted'}`}
+                <Star
+                  key={i}
+                  size={12}
+                  style={{ color: i < Math.floor(bundle.rating || 4.5) ? '#FFD700' : '#cbd5e0' }}
                   fill={i < Math.floor(bundle.rating || 4.5) ? 'currentColor' : 'none'}
                 />
               ))}
             </div>
-            <small className="text-muted">({bundle.rating || '4.5'})</small>
+            <small style={{ color: '#4a5568' }}>({bundle.rating || '4.5'})</small>
           </div>
         </div>
       </div>
 
       {/* Bundle Stats */}
-      <div className="row g-2 mb-3 text-sm">
+      <div className="row g-2 mb-3">
         <div className="col-6">
           <div className="d-flex align-items-center">
-            <FileText size={14} className="text-primary me-2" />
-            <small>{bundle.productCount || bundle.products?.length || 0} Materials</small>
+            <FileText size={14} style={{ color: '#FFD700' }} className="me-2" />
+            <small style={{ color: '#4a5568' }}>{bundle.productCount || bundle.products?.length || 0} Materials</small>
           </div>
         </div>
         <div className="col-6">
           <div className="d-flex align-items-center">
-            <Download size={14} className="text-success me-2" />
-            <small>{Math.floor(Math.random() * 500) + 100} Downloads</small>
+            <Download size={14} style={{ color: '#FFD700' }} className="me-2" />
+            <small style={{ color: '#4a5568' }}>{Math.floor(Math.random() * 500) + 100} Downloads</small>
           </div>
         </div>
         <div className="col-6">
           <div className="d-flex align-items-center">
-            <Users size={14} className="text-info me-2" />
-            <small>{Math.floor(Math.random() * 200) + 50} Students</small>
+            <Users size={14} style={{ color: '#FFD700' }} className="me-2" />
+            <small style={{ color: '#4a5568' }}>{Math.floor(Math.random() * 200) + 50} Students</small>
           </div>
         </div>
         <div className="col-6">
           <div className="d-flex align-items-center">
-            <Clock size={14} className="text-warning me-2" />
-            <small>Lifetime Access</small>
+            <Clock size={14} style={{ color: '#FFD700' }} className="me-2" />
+            <small style={{ color: '#4a5568' }}>Lifetime Access</small>
           </div>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-secondary small mb-4 flex-grow-1">
+      <p className="small mb-4 flex-grow-1" style={{ color: '#4a5568' }}>
         {bundle.description || "Comprehensive study materials with practice questions, detailed solutions, and expert guidance to help you excel in your exams."}
       </p>
 
       {/* Action Buttons */}
       <div className="d-flex gap-2 mt-auto">
         <button
-          className="btn btn-outline-primary btn-sm flex-fill"
+          className="btn btn-sm flex-fill"
           onClick={(e) => {
             e.stopPropagation();
             onPreview(bundle);
+          }}
+          style={{
+            border: '1px solid rgba(26, 54, 93, 0.2)',
+            color: '#1a365d',
+            background: 'transparent',
+            fontWeight: '500'
           }}
         >
           <Eye size={14} className="me-1" />
           Preview
         </button>
-        
+
         {bundle.price === 0 ? (
           <button
-            className={`btn btn-success btn-sm flex-fill d-flex align-items-center justify-content-center ${
+            className={`btn btn-sm flex-fill d-flex align-items-center justify-content-center ${
               isDownloading ? 'disabled' : ''
             }`}
             onClick={handleDownload}
             disabled={isDownloading}
+            style={{
+              background: '#FFD700',
+              border: 'none',
+              color: '#1a365d',
+              fontWeight: '600'
+            }}
           >
             {isDownloading ? (
               <>
@@ -147,10 +193,24 @@ const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) =
           </button>
         ) : (
           <button
-            className="btn qsolve-btn-primary btn-sm flex-fill"
-            onClick={(e) => {
+            className="btn btn-sm flex-fill"
+            onClick={async (e) => {
               e.stopPropagation();
-              onSelect(bundle);
+              const confirmed = window.confirm('Are you sure you want to purchase this bundle?');
+              if (confirmed) {
+                try {
+                  await dataService.confirmPayment(bundle._id || bundle.id);
+                  toast.success('Payment successful! Bundle purchased.');
+                } catch (error) {
+                  toast.error('Payment failed. Please try again.');
+                }
+              }
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #1a365d, #2d3748)',
+              border: 'none',
+              color: 'white',
+              fontWeight: '600'
             }}
           >
             Buy Now
@@ -161,28 +221,36 @@ const BundleCard = ({ bundle, onSelect, onPreview, onBookmark, isBookmarked }) =
   );
 };
 
-const BundleGrid = ({ 
-  bundles, 
-  loading, 
-  onBundleSelect, 
+const BundleGrid = ({
+  bundles,
+  loading,
+  onBundleSelect,
   onBundlePreview,
   bookmarkedBundles = [],
-  onBookmarkToggle 
+  onBookmarkToggle
 }) => {
   if (loading) {
     return (
-      <div className="container py-5">
+      <div className="container py-5" style={{ background: 'white' }}>
         <div className="row g-4">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="col-lg-4 col-md-6">
-              <div className="bundle-card-modern h-100 p-4">
+            <div key={index} className={`col-lg-4 col-md-6 ${index === 0 ? 'col-lg-6' : ''}`}>
+              <div
+                className="h-100 p-4"
+                style={{
+                  background: 'white',
+                  border: '1px solid rgba(26, 54, 93, 0.1)',
+                  borderRadius: '1rem',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
+                }}
+              >
                 <div className="placeholder-glow">
-                  <div className="placeholder col-8 mb-2"></div>
-                  <div className="placeholder col-6 mb-3"></div>
-                  <div className="placeholder col-12 mb-3" style={{ height: '60px' }}></div>
+                  <div className="placeholder col-8 mb-2" style={{ backgroundColor: 'rgba(26, 54, 93, 0.1)' }}></div>
+                  <div className="placeholder col-6 mb-3" style={{ backgroundColor: 'rgba(26, 54, 93, 0.1)' }}></div>
+                  <div className="placeholder col-12 mb-3" style={{ height: '60px', backgroundColor: 'rgba(26, 54, 93, 0.1)' }}></div>
                   <div className="d-flex gap-2">
-                    <div className="placeholder col-6" style={{ height: '32px' }}></div>
-                    <div className="placeholder col-6" style={{ height: '32px' }}></div>
+                    <div className="placeholder col-6" style={{ height: '32px', backgroundColor: 'rgba(26, 54, 93, 0.1)' }}></div>
+                    <div className="placeholder col-6" style={{ height: '32px', backgroundColor: 'rgba(26, 54, 93, 0.1)' }}></div>
                   </div>
                 </div>
               </div>
@@ -195,11 +263,11 @@ const BundleGrid = ({
 
   if (!bundles || bundles.length === 0) {
     return (
-      <div className="container py-5">
+      <div className="container py-5" style={{ background: 'white' }}>
         <div className="text-center">
-          <FileText size={64} className="text-muted mb-3" />
-          <h4 className="text-muted mb-2">No Study Materials Found</h4>
-          <p className="text-muted">
+          <FileText size={64} style={{ color: '#cbd5e0' }} className="mb-3" />
+          <h4 style={{ color: '#4a5568' }} className="mb-2">No Study Materials Found</h4>
+          <p style={{ color: '#a0aec0' }}>
             Try adjusting your search terms or filters to find what you're looking for.
           </p>
         </div>
@@ -208,28 +276,40 @@ const BundleGrid = ({
   }
 
   return (
-    <div className="container py-5">
-      <div className="row g-4">
-        {bundles.map((bundle, index) => (
-          <div 
-            key={bundle.id || bundle._id} 
-            className={`col-lg-4 col-md-6 ${index === 0 ? 'col-lg-6' : ''}`}
-          >
-            <BundleCard
-              bundle={bundle}
-              onSelect={onBundleSelect}
-              onPreview={onBundlePreview}
-              onBookmark={onBookmarkToggle}
-              isBookmarked={bookmarkedBundles.includes(bundle.id || bundle._id)}
-            />
-          </div>
-        ))}
+    <div style={{ backgroundColor: 'white', paddingLeft: '0', paddingRight: '0' }}>
+      <div className="container py-5" style={{ background: 'white', paddingLeft: '0', paddingRight: '0' }}>
+        <div className="row g-4" style={{ marginLeft: '0', marginRight: '0' }}>
+          {bundles.map((bundle, index) => (
+            <div
+              key={bundle.id || bundle._id}
+              className={`col-lg-4 col-md-6 ${index === 0 ? 'col-lg-6' : ''}`}
+            >
+              <BundleCard
+                bundle={bundle}
+                onSelect={onBundleSelect}
+                onPreview={onBundlePreview}
+                onBookmark={onBookmarkToggle}
+                isBookmarked={bookmarkedBundles.includes(bundle.id || bundle._id)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Load More Button */}
       {bundles.length > 0 && bundles.length % 6 === 0 && (
         <div className="text-center mt-5">
-          <button className="btn qsolve-btn-secondary btn-lg">
+          <button
+            className="btn btn-lg"
+            style={{
+              background: 'rgba(26, 54, 93, 0.1)',
+              border: '1px solid rgba(26, 54, 93, 0.2)',
+              color: '#1a365d',
+              fontWeight: '600',
+              padding: '0.875rem 2rem',
+              borderRadius: '0.75rem'
+            }}
+          >
             Load More Materials
           </button>
         </div>

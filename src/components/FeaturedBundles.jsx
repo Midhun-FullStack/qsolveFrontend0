@@ -19,7 +19,7 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
   return (
     <section className="py-5 bg-light">
       <div className="container">
-        {/* Section Header */}
+       
         <div className="row mb-5">
           <div className="col-lg-8 mx-auto text-center">
             <h2 className="display-4 fw-bold mb-3">
@@ -31,12 +31,12 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
           </div>
         </div>
 
-        {/* Featured Bundle Grid */}
+    
         <div className="row g-4 mb-5">
           {bundles.slice(0, 3).map((bundle, index) => (
-            <div 
+            <div  
               key={bundle.id} 
-              className={`col-lg-${index === 0 ? '4' : '4'} col-md-6`}
+              className={`col-lg-${index === 0 ? '0' : '4'} col-md-4`}
             >
               <div className={`bundle-card-modern h-100 p-4 ${index === 0 ? 'border-primary border-2' : ''}`}>
                 {index === 0 && (
@@ -48,7 +48,7 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
                 )}
 
                 <div className="d-flex flex-column h-100">
-                  {/* Bundle Header */}
+                  
                   <div className="mb-3">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <h5 className="fw-bold text-primary mb-0">{bundle.name}</h5>
@@ -64,7 +64,7 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
                       </div>
                     </div>
 
-                    {/* Rating */}
+                    
                     <div className="d-flex align-items-center mb-3">
                       <div className="d-flex me-2">
                         {[...Array(5)].map((_, i) => (
@@ -82,40 +82,12 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
                     </div>
                   </div>
 
-                  {/* Description */}
+                    
                   <p className="text-secondary mb-4 flex-grow-1">
                     {bundle.description || "Comprehensive study materials with practice questions, detailed solutions, and expert guidance to help you excel in your exams."}
                   </p>
 
-                  {/* Features */}
-                  <div className="mb-4">
-                    <div className="row g-2 text-sm">
-                      <div className="col-6">
-                        <div className="d-flex align-items-center">
-                          <Download size={14} className="text-primary me-2" />
-                          <small>PDF Downloads</small>
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="d-flex align-items-center">
-                          <Clock size={14} className="text-success me-2" />
-                          <small>Lifetime Access</small>
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="d-flex align-items-center">
-                          <Users size={14} className="text-info me-2" />
-                          <small>Expert Support</small>
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="d-flex align-items-center">
-                          <Star size={14} className="text-warning me-2" />
-                          <small>Premium Quality</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
 
                   {/* Action Buttons */}
                   <div className="d-flex gap-2 mt-auto">
@@ -138,14 +110,14 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
           ))}
         </div>
 
-        {/* All Bundles Grid */}
+        
         {bundles.length > 3 && (
           <div className="row g-4">
             {bundles.slice(3).map((bundle) => (
               <div key={bundle.id} className="col-lg-4 col-md-6">
                 <div className="bundle-card-modern h-100 p-4">
                   <div className="d-flex flex-column h-100">
-                    {/* Bundle Header */}
+                    
                     <div className="mb-3">
                       <h6 className="fw-bold text-primary mb-2">{bundle.name}</h6>
                       <div className="d-flex align-items-center justify-content-between mb-2">
@@ -157,12 +129,12 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
                       </div>
                     </div>
 
-                    {/* Description */}
+                    
                     <p className="text-secondary small mb-3 flex-grow-1">
                       {bundle.description || "Quality study materials for effective exam preparation."}
                     </p>
 
-                    {/* Action Buttons */}
+                    
                     <div className="d-flex gap-2">
                       <button
                         className="btn btn-sm btn-outline-primary flex-fill"
@@ -184,7 +156,7 @@ const FeaturedBundles = ({ bundles, onBundleClick }) => {
           </div>
         )}
 
-        {/* View All CTA */}
+        
         <div className="text-center mt-5">
           <button className="btn qsolve-btn-secondary btn-lg">
             View All Study Materials

@@ -39,8 +39,8 @@ const AdvancedFilters = ({
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div className="d-flex align-items-center">
-            <SlidersHorizontal size={24} className="text-primary me-2" />
-            <h5 className="mb-0 fw-bold">Advanced Filters</h5>
+            <SlidersHorizontal size={24} style={{ color: '#1a365d' }} className="me-2" />
+            <h5 className="mb-0 fw-bold" style={{ color: '#1a365d' }}>Advanced Filters</h5>
           </div>
           <button 
             className="btn btn-outline-secondary btn-sm rounded-circle p-2"
@@ -52,7 +52,7 @@ const AdvancedFilters = ({
 
         {/* Categories */}
         <div className="mb-4">
-          <h6 className="fw-semibold mb-3 text-primary">Categories</h6>
+          <h6 className="fw-semibold mb-3" style={{ color: '#1a365d' }}>Categories</h6>
           <div className="row g-2">
             {categories.map((category) => {
               const IconComponent = category.icon;
@@ -77,7 +77,7 @@ const AdvancedFilters = ({
 
         {/* Price Range */}
         <div className="mb-4">
-          <h6 className="fw-semibold mb-3 text-primary">Price Range</h6>
+          <h6 className="fw-semibold mb-3" style={{ color: '#1a365d' }}>Price Range</h6>
           <div className="d-flex flex-wrap gap-2">
             {priceRanges.map((range) => (
               <button
@@ -98,7 +98,7 @@ const AdvancedFilters = ({
 
         {/* Rating Filter */}
         <div className="mb-4">
-          <h6 className="fw-semibold mb-3 text-primary">Minimum Rating</h6>
+          <h6 className="fw-semibold mb-3" style={{ color: '#1a365d' }}>Minimum Rating</h6>
           <div className="d-flex gap-2">
             {[4, 3, 2, 1].map((rating) => (
               <button
@@ -119,7 +119,7 @@ const AdvancedFilters = ({
 
         {/* Sort By */}
         <div className="mb-4">
-          <h6 className="fw-semibold mb-3 text-primary">Sort By</h6>
+          <h6 className="fw-semibold mb-3" style={{ color: '#1a365d' }}>Sort By</h6>
           <select
             className="form-select"
             value={filters.sortBy || 'popular'}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { dataService } from '../services/dataService';
 import StudyMaterialsHero from './StudyMaterialsHero';
@@ -7,6 +8,9 @@ import BundleGrid from './BundleGrid';
 import BundleDetailView from './BundleDetailView';
 
 const StudyMaterials = ({ user }) => {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const departmentParam = searchParams.get('department');
   // State management
   const [bundles, setBundles] = useState([]);
   const [filteredBundles, setFilteredBundles] = useState([]);
@@ -38,6 +42,31 @@ const StudyMaterials = ({ user }) => {
   useEffect(() => {
     fetchBundles();
   }, []);
+
+  // Set initial department filter from URL params
+  useEffect(() => {
+    if (departmentParam && bundles.length > 0) {
+      const bundleWithDept = bundles.find(bundle => bundle.departmentID === departmentParam);
+      if (bundleWithDept) {
+        setFilters(prev => ({
+          ...prev,
+          category: bundleWithDept.departmentName
+        }));
+        toast.info(`Showing materials for ${bundleWithDept.departmentName}`);
+      }
+    }
+  }, [departmentParam, bundles]);
+
+  // Handle bundle parameter from URL (direct bundle view)
+  useEffect(() => {
+    const bundleParam = searchParams.get('bundle');
+    if (bundleParam && bundles.length > 0 && !selectedBundle) {
+      const bundleToShow = bundles.find(bundle => (bundle.id || bundle._id) === bundleParam);
+      if (bundleToShow) {
+        handleBundleSelect(bundleToShow);
+      }
+    }
+  }, [searchParams, bundles, selectedBundle]);
 
   // Apply filters when bundles, search term, or filters change
   useEffect(() => {
@@ -324,7 +353,28 @@ const StudyMaterials = ({ user }) => {
         onClearFilters={handleClearFilters}
       />
 
-    
+      {/* Bundle Grid */}
+      <BundleGrid
+        bundles={filteredBundles}
+        loading={loading}
+        onBundleSelect={handleBundleSelect}
+        onBundlePreview={handleBundlePreview}
+        onPurchase={handlePurchase}
+        onBookmarkToggle={handleBookmarkToggle}
+        bookmarkedBundles={bookmarkedBundles}
+      />
+
+      {/* Bundle Detail View */}
+      <BundleDetailView
+        isOpen={showBundleDetail}
+        onClose={() => setShowBundleDetail(false)}
+        bundle={selectedBundle}
+        products={bundleProducts}
+        subjects={bundleSubjects}
+        onDownload={handleDownload}
+        onPurchase={handlePurchase}
+        loading={loading}
+      />
     </div>
   );
 };
