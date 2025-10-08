@@ -74,8 +74,8 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
           <div className="row align-items-center min-vh-75">
             <div className="col-lg-6">
               <h1 className="display-3 fw-bolder mb-4">
-                Master Engineering with 
-                <span className="text-primary"> Q Solve</span>
+                Master Engineering with
+                <span style={{ color: '#FFD700' }}> Q Solve</span>
               </h1>
               <p className="lead mb-4 text-muted">
                 Access comprehensive question papers, practice tests, and study materials 

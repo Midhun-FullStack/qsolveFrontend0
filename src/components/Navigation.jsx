@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, User, House, BookOpen, Package, X } from 'lucide-react';
+import { Menu, User, House, BookOpen, Package, X, Download } from 'lucide-react';
 import * as bootstrap from 'bootstrap';
 
 const Navigation = ({ user, onLogout }) => {
@@ -37,8 +37,9 @@ const Navigation = ({ user, onLogout }) => {
   const navItems = [
     { id: 'home', label: 'Home', icon: House },
     { id: 'study-materials', label: 'Study Materials', icon: Package },
+    
     { id: 'about', label: 'About', icon: BookOpen },
-    { id: 'profile', label: 'My Profile', icon: User },
+   
   ];
 
   return (

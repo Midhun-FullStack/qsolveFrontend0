@@ -132,7 +132,7 @@ const AuthForm = ({ formType, onSubmit }) => {
               </button>
               
               <div className="text-center mb-4">
-                <h2 className="qsolve-brand mb-2">Q SOLVE</h2>
+                <h2 className="mb-2" style={{ color: 'black', fontFamily: 'Space Grotesk, Inter, sans-serif', fontWeight: 700, fontSize: '1.75rem' }}>Q SOLVE</h2>
                 <h4 className="card-title">{getFormTitle()}</h4>
               </div>
 
@@ -153,6 +153,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Enter your full name"
+                        style={{ color: 'black' }}
                       />
                       {validationErrors.name && (
                         <div className="invalid-feedback">{validationErrors.name}</div>
@@ -175,6 +176,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
+                      style={{ color: 'black' }}
                     />
                     {validationErrors.email && (
                       <div className="invalid-feedback">{validationErrors.email}</div>
@@ -197,6 +199,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="Enter your password"
+                        style={{ color: 'black' }}
                       />
                       <button
                         type="button"
@@ -227,6 +230,7 @@ const AuthForm = ({ formType, onSubmit }) => {
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         placeholder="Confirm your password"
+                        style={{ color: 'black' }}
                       />
                       <button
                         type="button"

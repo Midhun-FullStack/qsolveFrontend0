@@ -259,6 +259,25 @@
   animation-delay: -2s;
 }
 
+/* Ensure bundle action buttons are clickable even if parent cards have transforms or sibling stacking */
+.bundle-card, .bundle-card * {
+  -webkit-tap-highlight-color: transparent;
+}
+.bundle-card .btn,
+.bundle-card button {
+  position: relative;
+  z-index: 999 !important;
+  pointer-events: auto !important;
+}
+
+/* Also apply to the modern variant used in the grid */
+.bundle-card-modern .btn,
+.bundle-card-modern button {
+  position: relative;
+  z-index: 999 !important;
+  pointer-events: auto !important;
+}
+
 .floating-element:nth-child(3) {
   animation-delay: -4s;
 }

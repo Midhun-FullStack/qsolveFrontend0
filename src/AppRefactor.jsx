@@ -13,6 +13,7 @@ import AuthForm from './components/AuthForm';
 import HomePage from './components/HomePage';
 import SubjectPage from './components/SubjectPage';
 import StudyMaterials from './components/StudyMaterials';
+import PDFDownload from './components/PDFDownload';
 import ApiTest from './components/ApiTest';
 import ProfilePage from './components/ProfilePage';
 import AboutPage from './components/AboutPage';
@@ -92,6 +93,7 @@ function QSolveApp() {
               <Route path="/home" element={<HomePage subjects={subjects} bundles={bundles} user={user} />} />
               <Route path="/subject/:subjectId" element={<SubjectPage questionBanks={questionBanks} fetchQuestionBanksBySubject={fetchQuestionBanksBySubject} />} />
               <Route path="/study-materials" element={<StudyMaterials user={user} />} />
+              <Route path="/pdf-downloads" element={<PDFDownload />} />
               <Route path="/api-test" element={<ApiTest />} />
               <Route path="/profile" element={<ProfilePage user={user} />} />
               <Route path="/about" element={<AboutPage />} />

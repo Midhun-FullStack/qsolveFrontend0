@@ -22,6 +22,7 @@ const StudyMaterials = ({ user }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showBundleDetail, setShowBundleDetail] = useState(false);
   const [bookmarkedBundles, setBookmarkedBundles] = useState([]);
+  const [startPayment, setStartPayment] = useState(false);
   
   // Filter state
   const [filters, setFilters] = useState({
@@ -291,17 +292,87 @@ const StudyMaterials = ({ user }) => {
   };
 
   const handleDownload = async (material) => {
+    const getUrl = (m) => m?.fileUrl || m?.url || m?.path || m?.file?.url || m?.file?.path || null;
+    const getName = (m, idx = 0) => {
+      return (m?.originalName || m?.filename || m?.title || m?.subject || `download-${idx + 1}`).replace(/[^a-zA-Z0-9.\- _]/g, '_');
+    };
+
+    const downloadFromUrl = async (url, filename) => {
+      try {
+        // Try fetching the resource as a blob (works when CORS allows it)
+        const res = await fetch(url, { mode: 'cors' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(blobUrl);
+        return true;
+      } catch (err) {
+        // Fallback: try opening the URL in a new tab so browser can handle download (may prompt or navigate)
+        try {
+          window.open(url, '_blank');
+          return true;
+        } catch (e) {
+          console.error('Download failed fallback:', e);
+          return false;
+        }
+      }
+    };
+
     try {
-      toast.success(`Downloaded: ${material.subject || material.title}`);
-      // TODO: Implement actual download logic
+      // If a bundle object was passed (has files array), download all files sequentially
+      if (material && (Array.isArray(material.files) || Array.isArray(material.products))) {
+        const items = material.files || material.products || [];
+        if (items.length === 0) {
+          toast.info('No files available for download in this bundle.');
+          return;
+        }
+        toast.info('Preparing downloads...');
+        for (let i = 0; i < items.length; i++) {
+          const file = items[i];
+          const url = getUrl(file) || getUrl(material);
+          const name = getName(file, i);
+          if (!url) {
+            toast.warning(`Skipping file ${name}: no URL`);
+            continue;
+          }
+          // sequential to avoid many parallel fetches
+          const ok = await downloadFromUrl(url, name);
+          if (ok) toast.success(`Downloaded: ${name}`);
+          else toast.error(`Failed to download: ${name}`);
+          // small delay between downloads
+          await new Promise(r => setTimeout(r, 300));
+        }
+        return;
+      }
+
+      // Single material download
+      const url = getUrl(material);
+      const filename = getName(material);
+      if (!url) {
+        toast.error('No downloadable file found for this item');
+        return;
+      }
+      const ok = await downloadFromUrl(url, filename);
+      if (ok) toast.success(`Downloaded: ${filename}`);
+      else toast.error('Download failed');
     } catch (error) {
+      console.error('Download error:', error);
       toast.error('Download failed');
     }
   };
 
   const handlePurchase = (bundle) => {
-    toast.info(`Redirecting to purchase ${bundle.title}`);
-    // TODO: Implement purchase logic
+    // Open bundle detail and start payment flow
+    setSelectedBundle(bundle);
+    setShowBundleDetail(true);
+    setStartPayment(true);
+    toast.info(`Starting purchase for ${bundle.title}`);
   };
 
   const handleBookmarkToggle = (bundle) => {
@@ -369,10 +440,12 @@ const StudyMaterials = ({ user }) => {
         isOpen={showBundleDetail}
         onClose={() => setShowBundleDetail(false)}
         bundle={selectedBundle}
-        products={bundleProducts}
+        materials={bundleProducts}
         subjects={bundleSubjects}
         onDownload={handleDownload}
         onPurchase={handlePurchase}
+        startPayment={startPayment}
+        onPaymentStarted={() => setStartPayment(false)}
         loading={loading}
       />
     </div>
