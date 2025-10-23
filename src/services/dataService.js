@@ -13,9 +13,9 @@ export const dataService = {
     return response.data;
   },
 
-  // Get all question banks (purchased by user)
+  // Get all question banks (accessible by user through admin-granted access)
   getQuestionBanks: async () => {
-    const response = await api.get('/question-banks');
+    const response = await api.post('/question-banks');
     return response.data;
   },
 
@@ -49,15 +49,27 @@ export const dataService = {
     return response.data;
   },
 
-  // Create payment intent for bundle purchase
-  createPaymentIntent: async (bundleId) => {
-    const response = await api.post('/payments/create-payment-intent', { bundleId });
+  // Get user's accessible bundles (granted by admin)
+  getUserAccess: async () => {
+    const response = await api.get('/access/my-access');
     return response.data;
   },
 
-  // Confirm payment after successful Stripe payment
-  confirmPayment: async (bundleId) => {
-    const response = await api.post('/payments/confirm-payment', { bundleId, payment: true });
+  // Get access details for a specific bundle
+  getAccessDetails: async (bundleId) => {
+    const response = await api.get(`/access/details/${bundleId}`);
+    return response.data;
+  },
+
+  // Submit access request
+  submitAccessRequest: async (requestData) => {
+    const response = await api.post('/access-requests/request', requestData);
+    return response.data;
+  },
+
+  // Get user's access requests
+  getUserAccessRequests: async () => {
+    const response = await api.get('/access-requests/my-requests');
     return response.data;
   }
 };

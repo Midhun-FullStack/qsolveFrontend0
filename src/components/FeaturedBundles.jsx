@@ -1,129 +1,217 @@
-import { Star, Download, Clock, Users, ArrowRight } from 'lucide-react';
+import { useState, useEffect, memo } from 'react';
+import { Star, Download, Users, ArrowRight, Rocket, Shield, Award } from 'lucide-react';
 
-const FeaturedBundles = ({ bundles, onBundleClick }) => {
-  if (!bundles || bundles.length === 0) {
+// Constants
+const DEFAULT_BUNDLES = [
+  { id: 1, name: 'Complete JEE Prep', price: 2999, rating: 4.8, description: 'All-in-one JEE Main & Advanced preparation materials' },
+  { id: 2, name: 'NEET Master Bundle', price: 2499, rating: 4.6, description: 'Comprehensive NEET biology, chemistry, and physics' },
+  { id: 3, name: 'Board Exam Elite', price: 1999, rating: 4.5, description: 'Complete CBSE/ICSE board exam preparation' }
+];
+
+const ICONS = [Rocket, Shield, Award];
+const GRADIENTS = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+];
+
+const FeaturedBundles = memo(({ bundles = DEFAULT_BUNDLES, onBundleClick = () => { }, loading = false }) => {
+  const styles = `
+    .title-glow { 
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    
+    .featured-card {
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    
+    .featured-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    
+    .featured-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .featured-btn-primary:hover {
+      background: #5855eb !important;
+      transform: translateY(-2px);
+    }
+  `;
+
+  if (loading) {
     return (
-      <section className="py-5">
-        <div className="container">
-          <div className="text-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-            <p className="mt-3 text-muted">Loading study materials...</p>
+      <section style={{
+        position: 'relative',
+        minHeight: '50vh',
+        background: 'linear-gradient(135deg, #0b0c10 0%, #1a1d29 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div className="text-center">
+          <div className="spinner-border" style={{ color: '#6366f1' }} role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
+          <p className="mt-3" style={{ color: '#cbd5e1' }}>Loading study materials...</p>
         </div>
       </section>
     );
   }
 
+  // Use default bundles if no bundles are provided or if bundles array is empty
+  const displayBundles = (bundles && bundles.length > 0) ? bundles : DEFAULT_BUNDLES;
+
+
+
   return (
-    <section className="py-5" style={{ background: '#f8fafc' }}>
+    <section style={{
+      background: 'linear-gradient(135deg, #0b0c10 0%, #1a1d29 100%)',
+      padding: '4rem 0'
+    }}>
+      <style>{styles}</style>
+
       <div className="container">
-       
+        {/* Section Header */}
         <div className="row mb-5">
           <div className="col-lg-8 mx-auto text-center">
-            <h2 className="display-4 fw-bold mb-3">
-              Premium <span className=""style={{color:"#FFD700"}} >Study Bundles</span>
+            <h2
+              className="title-glow"
+              style={{
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                fontWeight: 'bold',
+                marginBottom: '1.5rem',
+                background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              course materials
             </h2>
-            <p className="lead text-muted">
+            <p style={{
+              fontSize: '1.15rem',
+              color: '#e2e8f0',
+              maxWidth: '650px',
+              margin: '0 auto',
+              lineHeight: '1.65',
+              fontWeight: '400',
+              opacity: '0.9'
+            }}>
               Carefully curated study materials designed by experts to help you achieve academic excellence
             </p>
           </div>
         </div>
 
-    
-        
-
-        
+        {/* Simple Product Cards */}
         <div className="row g-4 mb-5">
-          {bundles.slice(0, 3).map((bundle, index) => (
-            <div key={bundle.id || bundle._id} className={`col-lg-${index === 0 ? '6' : '4'} col-md-6`}>
-              <div
-                className="h-100 p-4"
-                style={{
-                  background: 'white',
-                  borderRadius: '1rem',
-                  border: index === 0 ? '2px solid #1a365d' : '1px solid rgba(26,54,93,0.06)',
-                  boxShadow: '0 20px 40px rgba(26,54,93,0.04)',
-                  position: 'relative',
-                  color: '#1a365d'
-                }}
-              >
-                {index === 0 && (
-                  <div className="position-absolute" style={{ top: -18, left: 24 }}>
-                    <span className="badge" style={{ background: '#FFD700', color: '#1a365d', padding: '0.5rem 0.9rem', borderRadius: '999px', fontWeight: 700 }}>
-                      Most Popular
-                    </span>
-                  </div>
-                )}
+          {displayBundles.slice(0, 3).map((bundle, index) => {
+            const IconComponent = ICONS[index % ICONS.length];
 
-                <div className="d-flex flex-column h-100">
-                  <div className="mb-3">
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h5 className="fw-bold mb-0" style={{ color: '#1a365d' }}>{bundle.name}</h5>
-                      <span className="badge" style={{ background: 'rgba(255,215,0,0.12)', color: '#1a365d', padding: '0.25rem 0.6rem', borderRadius: '999px', fontWeight: 600 }}>
-                        Premium
-                      </span>
-                    </div>
-
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="h4 fw-bold text-dark mb-0" style={{ color: '#1a365d' }}>₹{bundle.price}</div>
-                      <div className="ms-2">
-                        <small className="text-decoration-line-through text-muted">₹{Math.round(bundle.price * 1.5)}</small>
-                      </div>
-                    </div>
-
-                    <div className="d-flex align-items-center mb-3">
-                      <div className="d-flex me-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={14}
-                            className={`${i < Math.floor(bundle.rating || 4.5) ? 'text-warning' : 'text-muted'}`}
-                            fill={i < Math.floor(bundle.rating || 4.5) ? 'currentColor' : 'none'}
-                          />
-                        ))}
-                      </div>
-                      <small className="text-muted">
-                        {bundle.rating || '4.5'} ({Math.floor(Math.random() * 500) + 100} reviews)
-                      </small>
-                    </div>
-                  </div>
-
-                  <p className="text-muted mb-4 flex-grow-1" style={{ color: '#4a5568' }}>
-                    {bundle.description || 'Comprehensive study materials with practice questions, detailed solutions, and expert guidance to help you excel in your exams.'}
-                  </p>
-
-                  {/* Action Buttons */}
-                  <div className="d-flex gap-2 mt-auto">
-                    <button
-                      className="btn btn-outline-primary flex-fill"
-                      onClick={() => onBundleClick(bundle)}
-                      style={{ border: '1px solid rgba(26,54,93,0.08)', color: '#1a365d', background: 'white', fontWeight: 700 }}
-                    >
-                      Preview
-                    </button>
-                    <button
-                      className={`btn flex-fill`}
-                      onClick={() => onBundleClick(bundle)}
+            return (
+              <div key={bundle.id || bundle._id} className="col-lg-4 col-md-6">
+                <div
+                  className="featured-card h-100"
+                  style={{
+                    background: 'rgba(15, 20, 40, 0.9)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    color: 'white',
+                    backdropFilter: 'blur(10px)',
+                    cursor: 'pointer',
+                    padding: '2rem'
+                  }}
+                >
+                  {/* Icon */}
+                  <div className="text-center mb-3">
+                    <div
+                      className="d-inline-flex align-items-center justify-content-center"
                       style={{
-                        background: 'linear-gradient(90deg, #1a365d, #28415a)',
-                        border: 'none',
-                        color: 'white',
-                        fontWeight: 700
+                        width: '60px',
+                        height: '60px',
+                        background: '#6366f1',
+                        borderRadius: '12px'
                       }}
                     >
-                      Buy Now
-                    </button>
+                      <IconComponent size={28} color="white" />
+                    </div>
                   </div>
+
+                  {/* Title */}
+                  <h5 className="text-center fw-bold mb-3" style={{ color: 'white', fontSize: '1.25rem' }}>
+                    {bundle.name || bundle.title || 'Study Bundle'}
+                  </h5>
+
+                  {/* Description */}
+                  <p className="text-center mb-4" style={{ color: '#cbd5e1', fontSize: '0.9rem' }}>
+                    {bundle.description || 'Comprehensive study materials with practice questions.'}
+                  </p>
+
+                  {/* Price */}
+
+
+                  {/* Rating */}
+                  <div className="d-flex align-items-center justify-content-center mb-4">
+                    <div className="d-flex me-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className={`${i < Math.floor(bundle.rating || 4.5) ? 'text-warning' : 'text-white-50'}`}
+                          fill={i < Math.floor(bundle.rating || 4.5) ? 'currentColor' : 'none'}
+                        />
+                      ))}
+                    </div>
+                    <small style={{ color: '#e2e8f0' }}>
+                      {bundle.rating || '4.5'} ({100 + index * 50})
+                    </small>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="d-flex justify-content-between mb-4" style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
+                    <div className="d-flex align-items-center">
+                      <Users size={14} className="me-1" style={{ color: '#6366f1' }} />
+                      {700 + index * 200}+ Students
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <Download size={14} className="me-1" style={{ color: '#6366f1' }} />
+                      {500 + index * 100}+
+                    </div>
+                  </div>
+
+                  {/* Button */}
+                  <button
+                    className="btn w-100 featured-btn featured-btn-primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onBundleClick(bundle);
+                    }}
+                    style={{
+                      background: '#6366f1',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    <ArrowRight size={16} className="me-2" />
+                    Get Started
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
   );
-};
+});
+
+FeaturedBundles.displayName = 'FeaturedBundles';
 
 export default FeaturedBundles;

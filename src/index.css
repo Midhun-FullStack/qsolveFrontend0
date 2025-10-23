@@ -26,6 +26,30 @@ body {
   margin: 0;
 }
 
+/* Layout Styles */
+.main-layout,
+.public-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-layout main,
+.public-layout main {
+  flex: 1;
+}
+
+/* Footer Styles */
+footer {
+  margin-top: auto;
+}
+
+/* Ensure components don't have conflicting heights */
+.homepage-modern,
+.study-materials-modern {
+  min-height: auto;
+}
+
 /* Utility Classes */
 .min-vh-75 {
   min-height: 75vh;
@@ -49,9 +73,10 @@ body {
   background: var(--bs-gray-500);
 }
 
-/* Animation Classes */
+/* Optimized Animation Classes */
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;
+  will-change: transform, opacity;
 }
 
 @keyframes fadeIn {
@@ -62,6 +87,25 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Performance optimizations */
+.card-hover {
+  will-change: transform;
+  transition: transform 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -79,7 +123,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,6 +142,15 @@ body {
   
   .qsolve-brand {
     font-size: 1.25rem;
+  }
+
+  /* Mobile Navigation Adjustments */
+  .futuristic-nav {
+    padding: 0.75rem 0 !important;
+  }
+
+  .futuristic-sidebar {
+    width: 320px !important;
   }
 }
 

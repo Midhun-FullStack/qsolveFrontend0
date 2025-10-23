@@ -1,18 +1,16 @@
+import React, { useState, useEffect } from 'react';
 import {
   X, Star, Download, Share2, Bookmark, Play, FileText,
-  Clock, Users, CheckCircle, ArrowLeft, CircleArrowDown, Lock
+  Clock, Users, CheckCircle, ArrowLeft, CircleArrowDown, Lock,
+  Shield, Award, Zap, Target, UserPlus
 } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import PaymentForm from './PaymentForm';
 
-const MaterialCard = ({ material, onDownload, isPaid }) => {
+const MaterialCard = ({ material, onDownload, hasAccess }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const handleDownload = async () => {
-    if (!isPaid) return;
+    if (!hasAccess) return;
     setIsDownloading(true);
     try {
       await onDownload(material);
@@ -22,31 +20,82 @@ const MaterialCard = ({ material, onDownload, isPaid }) => {
   };
 
   return (
-    <div className="glass-card p-3 rounded-3 mb-3" style={{ transition: 'transform 0.18s ease, box-shadow 0.18s ease', background: 'rgba(255,255,255,0.98)', border: '1px solid rgba(26,54,93,0.06)', color: '#1a365d' }}>
+    <div 
+      className="mb-3" 
+      style={{ 
+        background: 'rgba(15, 20, 40, 0.8)',
+        border: '1px solid rgba(99, 102, 241, 0.2)',
+        borderRadius: '1rem',
+        padding: '1.5rem',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        transition: 'all 0.3s ease',
+        color: '#ffffff'
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-5px)';
+        e.currentTarget.style.boxShadow = '0 20px 40px rgba(99, 102, 241, 0.3)';
+        e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+      }}
+    >
       <div className="d-flex justify-content-between align-items-start">
         <div className="flex-grow-1" onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer' }}>
           <div className="d-flex align-items-center mb-2">
-            <FileText size={16} className="text-primary me-2" />
-            <h6 className="mb-0 fw-semibold">{material.subject || material.title}</h6>
-            <small className="ms-3 text-muted">{material.size || ''}</small>
+            <FileText size={18} className="me-2" style={{ color: '#6366f1' }} />
+            <h6 className="mb-0 fw-semibold" style={{ color: '#ffffff' }}>{material.subject || material.title}</h6>
+            <small className="ms-3" style={{ color: '#cbd5e1' }}>{material.size || ''}</small>
           </div>
-          <p className="text-muted small mb-2" style={{ maxHeight: expanded ? '200px' : '40px', overflow: 'hidden', transition: 'max-height 0.25s ease' }}>
-            {material.description || 'Study material with comprehensive coverage'}
+          <p 
+            className="small mb-2" 
+            style={{ 
+              maxHeight: expanded ? '200px' : '40px', 
+              overflow: 'hidden', 
+              transition: 'max-height 0.25s ease',
+              color: '#cbd5e1',
+              lineHeight: '1.5'
+            }}
+          >
+            {material.description || 'Study material with comprehensive coverage and detailed explanations'}
           </p>
           <div className="d-flex align-items-center text-sm">
-            <Clock size={12} className="text-muted me-1" />
-            <small className="text-muted">PDF Document • Updated recently</small>
+            <Clock size={12} className="me-1" style={{ color: '#6366f1' }} />
+            <small style={{ color: '#cbd5e1' }}>PDF Document • Updated recently</small>
           </div>
         </div>
 
-          <div className="ms-3 d-flex flex-column align-items-end">
+        <div className="ms-3 d-flex flex-column align-items-end">
           <button
-            className={`btn btn-sm mb-2 d-flex align-items-center`}
+            className="btn btn-sm mb-2 d-flex align-items-center"
             onClick={handleDownload}
-            disabled={isDownloading || !isPaid}
-            aria-label={isPaid ? `Download ${material.title}` : 'Locked, purchase to download'}
-            title={isPaid ? 'Download' : 'Locked'}
-            style={isDownloading ? { background: 'rgba(0,0,0,0.06)', color: '#1a365d', border: 'none' } : isPaid ? { background: 'linear-gradient(90deg, #FFD700, #FFC107)', color: '#1a365d', border: 'none' } : { background: 'transparent', color: '#6c757d', border: '1px solid rgba(108,117,125,0.12)' }}
+            disabled={isDownloading || !hasAccess}
+            style={
+              isDownloading 
+                ? { 
+                    background: 'rgba(99, 102, 241, 0.2)', 
+                    color: '#6366f1', 
+                    border: 'none',
+                    borderRadius: '0.5rem'
+                  } 
+                : hasAccess 
+                ? { 
+                    background: '#6366f1', 
+                    color: '#ffffff', 
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    fontWeight: '600'
+                  } 
+                : { 
+                    background: 'transparent', 
+                    color: '#6c757d', 
+                    border: '1px solid rgba(108,117,125,0.3)',
+                    borderRadius: '0.5rem'
+                  }
+            }
           >
             {isDownloading ? (
               <>
@@ -55,7 +104,7 @@ const MaterialCard = ({ material, onDownload, isPaid }) => {
                 </div>
                 <span className="d-none d-sm-inline">Downloading...</span>
               </>
-            ) : isPaid ? (
+            ) : hasAccess ? (
               <>
                 <CircleArrowDown size={14} className="me-1" />
                 <span className="d-none d-sm-inline">Download</span>
@@ -63,7 +112,7 @@ const MaterialCard = ({ material, onDownload, isPaid }) => {
             ) : (
               <>
                 <Lock size={14} className="me-1" />
-                <span className="d-none d-sm-inline">Locked</span>
+                <span className="d-none d-sm-inline">No Access</span>
               </>
             )}
           </button>
@@ -71,9 +120,13 @@ const MaterialCard = ({ material, onDownload, isPaid }) => {
           <button
             className="btn btn-sm"
             onClick={() => setExpanded(!expanded)}
-            aria-expanded={expanded}
-            title={expanded ? 'Collapse details' : 'Expand details'}
-            style={{ border: '1px solid rgba(26,54,93,0.08)', color: '#1a365d', background: 'white' }}
+            style={{ 
+              border: '1px solid rgba(99, 102, 241, 0.3)', 
+              color: '#6366f1', 
+              background: 'rgba(99, 102, 241, 0.1)',
+              borderRadius: '0.5rem',
+              transition: '0.3s'
+            }}
           >
             {expanded ? 'Hide' : 'Details'}
           </button>
@@ -84,29 +137,101 @@ const MaterialCard = ({ material, onDownload, isPaid }) => {
 };
 
 const BundleDetailView = ({
-  bundle,
+  bundle = { title: 'Sample Bundle', departmentName: 'Engineering', description: 'Comprehensive study materials', rating: 4.5 },
   materials = [],
   subjects = [],
-  isOpen,
-  onClose,
-  onDownload,
-  onPurchase,
-  isBookmarked,
-  onBookmarkToggle
-  , startPayment, onPaymentStarted
+  isOpen = true,
+  onClose = () => {},
+  onDownload = () => {},
+  isBookmarked = false,
+  onBookmarkToggle = () => {},
+  userAccess = null, // { hasAccess: boolean, expiryDate: string, grantedBy: string }
+  onRequestAccess = () => {}
 }) => {
   const [activeTab, setActiveTab] = useState('materials');
-  const [isPaid, setIsPaid] = useState(bundle?.price === 0); // Free bundles are paid by default
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isRequestingAccess, setIsRequestingAccess] = useState(false);
+  
+  const hasAccess = userAccess?.hasAccess || false;
+  const isExpired = userAccess?.expiryDate && new Date(userAccess.expiryDate) < new Date();
+
+  const handleRequestAccess = async () => {
+    setIsRequestingAccess(true);
+    try {
+      await onRequestAccess(bundle);
+    } finally {
+      setIsRequestingAccess(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   if (!isOpen || !bundle) return null;
 
-  // if parent requested to start payment, open form and notify parent
-  if (startPayment) {
-    if (!showPaymentForm) setShowPaymentForm(true);
-    if (typeof onPaymentStarted === 'function') onPaymentStarted();
-  }
+  const keyframes = `
+    @keyframes floatBlob1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-30px, 50px) scale(0.9); }
+    }
+
+    @keyframes floatBlob2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-40px, 30px) scale(0.9); }
+      66% { transform: translate(40px, -40px) scale(1.1); }
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(0, 255, 127, 0.5), 0 0 40px rgba(0, 255, 127, 0.3); }
+      50% { text-shadow: 0 0 30px rgba(0, 255, 127, 0.8), 0 0 60px rgba(0, 255, 127, 0.6); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { r: 6; opacity: 1; }
+      50% { r: 12; opacity: 0; }
+    }
+
+    @keyframes gridFlow {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100px); }
+    }
+
+    @keyframes orbitParticle {
+      0% { transform: rotate(0deg) translateX(80px) rotate(0deg); opacity: 1; }
+      100% { transform: rotate(360deg) translateX(80px) rotate(-360deg); opacity: 1; }
+    }
+
+    .blob-1 {
+      animation: floatBlob1 8s ease-in-out infinite;
+    }
+
+    .blob-2 {
+      animation: floatBlob2 10s ease-in-out infinite;
+    }
+
+    .title-glow {
+      animation: titleGlow 3s ease-in-out infinite;
+    }
+
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .animated-grid {
+      animation: gridFlow 20s linear infinite;
+    }
+
+    .orbit-particle {
+      animation: orbitParticle 20s linear infinite;
+    }
+  `;
 
   const features = [
     'Comprehensive study materials',
@@ -120,16 +245,104 @@ const BundleDetailView = ({
   return (
     <div className="position-fixed top-0 start-0 w-100 h-100" style={{
       zIndex: 1055,
-      background: 'rgba(10,10,10,0.35)',
-      backdropFilter: 'blur(6px)'
+      background: 'linear-gradient(135deg, #0b0c10 0%, #1a1d29 100%)',
+      overflow: 'hidden'
     }}>
+      <style>{keyframes}</style>
+
+      {/* Animated SVG Background */}
+      <svg
+        className="animated-bg"
+        viewBox="0 0 1400 900"
+        preserveAspectRatio="xMidYMid slice"
+        style={{
+          position: 'fixed',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          zIndex: -1
+        }}
+      >
+        <defs>
+          <radialGradient id="glowGrad1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style={{ stopColor: '#6366f1', stopOpacity: 0.5 }} />
+            <stop offset="100%" style={{ stopColor: '#8b5cf6', stopOpacity: 0 }} />
+          </radialGradient>
+          <radialGradient id="glowGrad2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style={{ stopColor: '#8b5cf6', stopOpacity: 0.4 }} />
+            <stop offset="100%" style={{ stopColor: '#6366f1', stopOpacity: 0 }} />
+          </radialGradient>
+          <filter id="blur">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="50" />
+          </filter>
+        </defs>
+
+        {/* Animated Grid */}
+        <g className="animated-grid" opacity="0.06" stroke="#6366f1" strokeWidth="1">
+          {[...Array(15)].map((_, i) => (
+            <line key={`v${i}`} x1={i * 100} y1="0" x2={i * 100} y2="900" />
+          ))}
+          {[...Array(10)].map((_, i) => (
+            <line key={`h${i}`} x1="0" y1={i * 100} x2="1400" y2={i * 100} />
+          ))}
+        </g>
+
+        {/* Floating Gradient Blobs */}
+        <g className="blob blob-1" filter="url(#blur)">
+          <circle cx="200" cy="200" r="160" fill="url(#glowGrad1)" />
+        </g>
+
+        <g className="blob blob-2" filter="url(#blur)">
+          <circle cx="1200" cy="700" r="190" fill="url(#glowGrad2)" />
+        </g>
+
+        {/* Pulsing Nodes */}
+        <g className="node node-1">
+          <circle cx="350" cy="200" r="5" fill="#6366f1" opacity="0.8" />
+          <circle cx="350" cy="200" r="5" fill="none" stroke="#6366f1" strokeWidth="2" className="pulse" />
+        </g>
+
+        <g className="node node-2">
+          <circle cx="1050" cy="500" r="5" fill="#8b5cf6" opacity="0.8" />
+          <circle cx="1050" cy="500" r="5" fill="none" stroke="#8b5cf6" strokeWidth="2" className="pulse" />
+        </g>
+
+        {/* Orbital Particles */}
+        <g transform="translate(700, 450)">
+          {[...Array(6)].map((_, i) => (
+            <g key={`orbit${i}`} className="orbit-particle" style={{ animationDelay: `${i * 3.33}s` }}>
+              <circle cx="0" cy="0" r="3" fill="#6366f1" opacity="0.6" />
+            </g>
+          ))}
+        </g>
+      </svg>
+
+      {/* Cursor Glow Effect */}
+      <div
+        style={{
+          position: 'fixed',
+          width: '400px',
+          height: '400px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+          left: mousePos.x - 200,
+          top: mousePos.y - 200,
+          transition: 'left 0.1s ease-out, top 0.1s ease-out'
+        }}
+      />
+
       {/* Header */}
       <div className="sticky-top" style={{
-        background: 'white',
-        color: '#1a365d',
-        backdropFilter: 'blur(6px)',
-        borderBottom: '1px solid rgba(26,54,93,0.06)',
-        boxShadow: '0 6px 24px rgba(26,54,93,0.06)'
+        background: 'rgba(15, 20, 40, 0.9)',
+        color: '#ffffff',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
+        boxShadow: '0 6px 24px rgba(99, 102, 241, 0.2)',
+        zIndex: 10
       }}>
         <div className="container-fluid">
           <div className="row align-items-center py-4">
@@ -138,20 +351,26 @@ const BundleDetailView = ({
                 className="btn rounded-circle p-3 shadow-sm"
                 onClick={onClose}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  border: 'none',
-                  color: '#6c757d',
+                  background: 'rgba(99, 102, 241, 0.1)',
+                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  color: '#6366f1',
                   transition: 'all 0.3s ease'
                 }}
-                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)';
+                  e.target.style.background = 'rgba(99, 102, 241, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.background = 'rgba(99, 102, 241, 0.1)';
+                }}
               >
                 <ArrowLeft size={24} />
               </button>
             </div>
             <div className="col">
-              <h3 className="mb-1 fw-bold" style={{
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              <h3 className="mb-1 fw-bold title-glow" style={{
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -159,7 +378,7 @@ const BundleDetailView = ({
               }}>
                 {bundle.title || bundle.name}
               </h3>
-              <small className="text-muted fw-medium">{bundle.departmentName}</small>
+              <small style={{ color: '#cbd5e1', fontWeight: 500 }}>{bundle.departmentName}</small>
             </div>
             <div className="col-auto">
               <div className="d-flex gap-3">
@@ -167,9 +386,9 @@ const BundleDetailView = ({
                   className="btn rounded-circle p-3 shadow-sm"
                   onClick={() => onBookmarkToggle(bundle)}
                   style={{
-                    background: isBookmarked ? 'linear-gradient(135deg, #ffd700, #ffb347)' : 'rgba(255, 255, 255, 0.9)',
-                    border: 'none',
-                    color: isBookmarked ? 'white' : '#6c757d',
+                    background: isBookmarked ? '#6366f1' : 'rgba(99, 102, 241, 0.1)',
+                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                    color: isBookmarked ? '#ffffff' : '#6366f1',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -180,9 +399,9 @@ const BundleDetailView = ({
                 <button
                   className="btn rounded-circle p-3 shadow-sm"
                   style={{
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    border: 'none',
-                    color: '#6c757d',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                    color: '#6366f1',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -194,116 +413,130 @@ const BundleDetailView = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="container-fluid" style={{ paddingTop: '100px', paddingBottom: '100px', height: 'calc(100vh - 80px)', overflowY: 'auto' }}>
+      </div> 
+     <div className="container-fluid" style={{ 
+        paddingTop: '2rem', 
+        paddingBottom: '2rem', 
+        height: 'calc(100vh - 80px)', 
+        overflowY: 'auto',
+        position: 'relative',
+        zIndex: 1
+      }}>
         <div className="row">
           {/* Main Content */}
           <div className="col-lg-8">
             <div className="pe-lg-4">
               {/* Bundle Hero */}
               <div className="position-relative overflow-hidden rounded-4 mb-4" style={{
-                background: 'white',
-                backdropFilter: 'none',
-                border: '1px solid rgba(26,54,93,0.06)',
-                boxShadow: '0 20px 40px rgba(26,54,93,0.06)'
+                background: 'rgba(15, 20, 40, 0.7)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(99, 102, 241, 0.2)',
+                boxShadow: '0 20px 40px rgba(99, 102, 241, 0.2)'
               }}>
-                <div className="p-5" style={{ color: '#1a365d' }}>
+                <div className="p-5" style={{ color: '#ffffff' }}>
                   <div className="row align-items-center">
                     <div className="col-md-8">
                       <div className="mb-4">
                         <span className="badge px-3 py-2 rounded-pill mb-3" style={{
-                          background: 'linear-gradient(90deg, #FFD700, #FFC107)',
-                          color: '#1a365d',
-                          fontSize: '0.75rem',
+                          background: '#6366f1',
+                          color: '#ffffff',
+                          fontSize: '0.8rem',
                           fontWeight: '700'
                         }}>
                           {bundle.departmentName}
                         </span>
-                        <h1 className="display-5 fw-bold mb-3" style={{
-                          color: '#1a365d'
+                        <h1 className="display-5 fw-bold mb-3 title-glow" style={{
+                          color: '#ffffff'
                         }}>
                           {bundle.title || bundle.name}
                         </h1>
-                        <p className="lead mb-4" style={{ lineHeight: '1.6', color: '#4a5568' }}>
+                        <p className="lead mb-4" style={{ lineHeight: '1.6', color: '#cbd5e1' }}>
                           {bundle.description || "Comprehensive study materials designed to help you excel in your academic journey with expert-crafted content and detailed explanations."}
                         </p>
                       </div>
 
                       {/* Stats */}
-                      <div className="row g-4 mb-4" style={{ color: '#1a365d' }}>
+                      <div className="row g-4 mb-4">
                         <div className="col-auto">
                           <div className="d-flex align-items-center p-3 rounded-3" style={{
-                            background: 'rgba(26,54,93,0.05)',
-                            border: '1px solid rgba(26,54,93,0.08)'
+                            background: 'rgba(99, 102, 241, 0.1)',
+                            border: '1px solid rgba(99, 102, 241, 0.2)'
                           }}>
-                            <Star size={20} className="me-3" style={{ color: '#FFD700' }} fill="currentColor" />
+                            <Star size={20} className="me-3" style={{ color: '#6366f1' }} fill="currentColor" />
                             <div>
-                              <div className="h5 fw-bold mb-0" style={{ color: '#1a365d' }}>{bundle.rating || '4.5'}</div>
-                              <small className="text-muted">({Math.floor(Math.random() * 200) + 50} reviews)</small>
+                              <div className="h5 fw-bold mb-0" style={{ color: '#ffffff' }}>{bundle.rating || '4.5'}</div>
+                              <small style={{ color: '#cbd5e1' }}>({Math.floor(Math.random() * 200) + 50} reviews)</small>
                             </div>
                           </div>
                         </div>
                         <div className="col-auto">
                           <div className="d-flex align-items-center p-3 rounded-3" style={{
-                            background: 'rgba(26,54,93,0.05)',
-                            border: '1px solid rgba(26,54,93,0.08)'
+                            background: 'rgba(99, 102, 241, 0.1)',
+                            border: '1px solid rgba(99, 102, 241, 0.2)'
                           }}>
-                            <Users size={20} className="me-3" style={{ color: '#FFD700' }} />
+                            <Users size={20} className="me-3" style={{ color: '#6366f1' }} />
                             <div>
-                              <div className="h5 fw-bold mb-0" style={{ color: '#1a365d' }}>{Math.floor(Math.random() * 500) + 100}</div>
-                              <small className="text-muted">Students</small>
+                              <div className="h5 fw-bold mb-0" style={{ color: '#ffffff' }}>{Math.floor(Math.random() * 500) + 100}</div>
+                              <small style={{ color: '#cbd5e1' }}>Students</small>
                             </div>
                           </div>
                         </div>
                         <div className="col-auto">
                           <div className="d-flex align-items-center p-3 rounded-3" style={{
-                            background: 'rgba(26,54,93,0.05)',
-                            border: '1px solid rgba(26,54,93,0.08)'
+                            background: 'rgba(99, 102, 241, 0.1)',
+                            border: '1px solid rgba(99, 102, 241, 0.2)'
                           }}>
-                            <Download size={20} className="me-3" style={{ color: '#FFD700' }} />
+                            <Download size={20} className="me-3" style={{ color: '#6366f1' }} />
                             <div>
-                              <div className="h5 fw-bold mb-0" style={{ color: '#1a365d' }}>{Math.floor(Math.random() * 1000) + 500}</div>
-                              <small className="text-muted">Downloads</small>
+                              <div className="h5 fw-bold mb-0" style={{ color: '#ffffff' }}>{Math.floor(Math.random() * 1000) + 500}</div>
+                              <small style={{ color: '#cbd5e1' }}>Downloads</small>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                        <div className="col-md-4 text-center">
+                    <div className="col-md-4 text-center">
                       <div className="p-4 rounded-4" style={{
-                        background: 'rgba(26,54,93,0.03)',
-                        border: '2px solid rgba(26,54,93,0.06)',
-                        backdropFilter: 'none'
+                        background: 'rgba(99, 102, 241, 0.1)',
+                        border: '2px solid rgba(99, 102, 241, 0.2)',
+                        backdropFilter: 'blur(10px)'
                       }}>
                         <div className="mb-3">
-                          {bundle.price === 0 ? (
-                            <div className="display-4 fw-bold text-success mb-2">Free</div>
+                          {hasAccess && !isExpired ? (
+                            <div className="display-6 fw-bold mb-2" style={{ color: '#00ff7f' }}>Access Granted</div>
+                          ) : isExpired ? (
+                            <div className="display-6 fw-bold mb-2" style={{ color: '#ff6b6b' }}>Access Expired</div>
                           ) : (
-                            <>
-                              <div className="display-4 fw-bold mb-2" style={{ color: '#1a365d' }}>
-                                ₹{bundle.price}
-                              </div>
-                              <small className="text-decoration-line-through text-muted h6">
-                                ₹{Math.round(bundle.price * 1.4)}
-                              </small>
-                            </>
+                            <div className="display-6 fw-bold mb-2" style={{ color: '#6c757d' }}>No Access</div>
                           )}
                         </div>
-                        <div className="d-flex align-items-center justify-content-center mb-3">
-                          <Clock size={16} className="me-2" style={{ color: '#4a5568' }} />
-                          <small style={{ color: '#4a5568', fontWeight: 500 }}>Lifetime Access</small>
-                        </div>
-                        {isPaid && bundle.price > 0 && (
-                          <div className="mt-2 badge rounded-pill" style={{ background: '#28a745', color: 'white' }}>Unlocked</div>
+                        
+                        {userAccess?.expiryDate && (
+                          <div className="d-flex align-items-center justify-content-center mb-3">
+                            <Clock size={16} className="me-2" style={{ color: '#cbd5e1' }} />
+                            <small style={{ color: '#cbd5e1', fontWeight: 500 }}>
+                              {isExpired ? 'Expired on' : 'Valid until'} {new Date(userAccess.expiryDate).toLocaleDateString()}
+                            </small>
+                          </div>
                         )}
+                        
+                        {userAccess?.grantedBy && (
+                          <div className="d-flex align-items-center justify-content-center mb-3">
+                            <Users size={16} className="me-2" style={{ color: '#cbd5e1' }} />
+                            <small style={{ color: '#cbd5e1', fontWeight: 500 }}>
+                              Granted by {userAccess.grantedBy}
+                            </small>
+                          </div>
+                        )}
+                        
                         <div className="badge px-3 py-2 rounded-pill" style={{
-                          background: 'linear-gradient(90deg, #FFD700, #FFC107)',
-                          color: '#1a365d',
+                          background: hasAccess && !isExpired ? '#00ff7f' : '#6c757d',
+                          color: hasAccess && !isExpired ? '#0b0c10' : '#ffffff',
                           fontWeight: '700'
                         }}>
                           <CheckCircle size={14} className="me-1" />
-                          Verified Content
+                          {hasAccess && !isExpired ? 'Active Access' : 'Institutional Content'}
                         </div>
                       </div>
                     </div>
@@ -314,17 +547,18 @@ const BundleDetailView = ({
               {/* Tabs */}
               <div className="mb-5">
                 <div className="d-flex justify-content-center">
-                  <div className="bg-white rounded-pill p-2 shadow-sm" style={{
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                  <div className="rounded-pill p-2 shadow-sm" style={{
+                    background: 'rgba(15, 20, 40, 0.7)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
                     backdropFilter: 'blur(10px)'
                   }}>
                     <div className="d-flex">
                       <button
-                        className={`btn rounded-pill px-4 py-2 me-2 ${activeTab === 'materials' ? '' : 'btn-outline-primary'}`}
+                        className="btn rounded-pill px-4 py-2 me-2"
                         onClick={() => setActiveTab('materials')}
                         style={{
-                          background: activeTab === 'materials' ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent',
-                          color: activeTab === 'materials' ? 'white' : '#6c757d',
+                          background: activeTab === 'materials' ? '#6366f1' : 'transparent',
+                          color: activeTab === 'materials' ? '#ffffff' : '#cbd5e1',
                           border: 'none',
                           fontWeight: '600',
                           transition: 'all 0.3s ease',
@@ -335,11 +569,11 @@ const BundleDetailView = ({
                         Materials ({(materials.length || subjects.length) + (bundle.files ? bundle.files.length : 0)})
                       </button>
                       <button
-                        className={`btn rounded-pill px-4 py-2 me-2 ${activeTab === 'preview' ? '' : 'btn-outline-primary'}`}
+                        className="btn rounded-pill px-4 py-2 me-2"
                         onClick={() => setActiveTab('preview')}
                         style={{
-                          background: activeTab === 'preview' ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent',
-                          color: activeTab === 'preview' ? 'white' : '#6c757d',
+                          background: activeTab === 'preview' ? '#00ff7f' : 'transparent',
+                          color: activeTab === 'preview' ? '#0b0c10' : '#cbd5e1',
                           border: 'none',
                           fontWeight: '600',
                           transition: 'all 0.3s ease',
@@ -350,11 +584,11 @@ const BundleDetailView = ({
                         Preview
                       </button>
                       <button
-                        className={`btn rounded-pill px-4 py-2 ${activeTab === 'reviews' ? '' : 'btn-outline-primary'}`}
+                        className="btn rounded-pill px-4 py-2"
                         onClick={() => setActiveTab('reviews')}
                         style={{
-                          background: activeTab === 'reviews' ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent',
-                          color: activeTab === 'reviews' ? 'white' : '#6c757d',
+                          background: activeTab === 'reviews' ? '#00ff7f' : 'transparent',
+                          color: activeTab === 'reviews' ? '#0b0c10' : '#cbd5e1',
                           border: 'none',
                           fontWeight: '600',
                           transition: 'all 0.3s ease',
@@ -367,130 +601,90 @@ const BundleDetailView = ({
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Tab Content */}
+              </div>   
+           {/* Tab Content */}
               <div className="tab-content">
                 {activeTab === 'materials' && (
                   <div>
-                    <h5 className="fw-bold mb-3">Study Materials</h5>
+                    <h5 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Study Materials</h5>
 
-                    {/* Question Bank Materials */}
                     {(materials.length > 0 ? materials : subjects).length > 0 && (
                       <div className="mb-4">
+                        {/* Access Notice for users without access */}
+                        {(!hasAccess || isExpired) && (
+                          <div className="alert p-4 mb-4 rounded-3" style={{
+                            background: 'rgba(108, 117, 125, 0.1)',
+                            border: '1px solid rgba(108, 117, 125, 0.2)',
+                            color: '#cbd5e1'
+                          }}>
+                            <div className="d-flex align-items-center mb-2">
+                              <Lock size={20} className="me-3" style={{ color: '#6c757d' }} />
+                              <h6 className="mb-0" style={{ color: '#ffffff' }}>
+                                {isExpired ? 'Access Expired' : 'Access Required'}
+                              </h6>
+                            </div>
+                            <p className="mb-0 small">
+                              {isExpired 
+                                ? 'Your access to this bundle has expired. Contact your administrator to renew access and download materials.'
+                                : 'This bundle requires institutional access to download materials. Contact your administrator to request access.'
+                              }
+                            </p>
+                          </div>
+                        )}
+
                         <div className="d-flex justify-content-between align-items-center mb-3">
-                          <h6 className="text-muted mb-0">Question Banks</h6>
-                          {isPaid && (
+                          <h6 className="mb-0" style={{ color: '#cbd5e1' }}>Question Banks</h6>
+                          {hasAccess && !isExpired && (
                             <button
-                              className="btn btn-outline-primary btn-sm d-flex align-items-center"
-                              onClick={() => {
-                                const items = materials.length > 0 ? materials : subjects;
-                                items.forEach(item => onDownload(item));
-                              }}
+                              className="btn btn-sm"
+                              onClick={() => onDownload(bundle)}
                               style={{
-                                border: '2px solid rgba(102, 126, 234, 0.3)',
-                                transition: 'all 0.3s ease'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(102, 126, 234, 0.1)';
-                                e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.background = 'transparent';
-                                e.target.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+                                background: '#00ff7f',
+                                border: 'none',
+                                color: '#0b0c10',
+                                fontWeight: 600,
+                                fontSize: '0.8rem'
                               }}
                             >
-                              <CircleArrowDown size={16} className="me-2" />
                               Download All
                             </button>
                           )}
                         </div>
-                        {(materials.length > 0 ? materials : subjects).map((item, index) => (
+
+                        {(materials.length > 0 ? materials : subjects).map((material, index) => (
                           <MaterialCard
-                            key={item._id || index}
-                            material={item}
+                            key={material.id || material._id || index}
+                            material={material}
                             onDownload={onDownload}
-                            isPaid={isPaid}
+                            hasAccess={hasAccess && !isExpired}
                           />
                         ))}
                       </div>
                     )}
 
-                    {/* Direct PDF Files */}
-                    {bundle.files && bundle.files.length > 0 && (
-                      <div className="mb-4">
-                        <h6 className="text-muted mb-3">Direct PDFs</h6>
-                        {bundle.files.map((file, index) => (
-                          <MaterialCard
-                            key={`direct-${index}`}
-                            material={{
-                              title: file.originalName || file.filename || `Document ${index + 1}`,
-                              subject: 'Direct Upload',
-                              description: 'PDF file uploaded directly to this bundle',
-                              fileUrl: file.url || file.path
-                            }}
-                            onDownload={onDownload}
-                            isPaid={isPaid}
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    {/* No materials message */}
-                    {materials.length === 0 && subjects.length === 0 && (!bundle.files || bundle.files.length === 0) && (
-                      <div className="text-center py-5">
-                        <FileText size={48} className="text-muted mb-3" />
-                        <h6 className="text-muted">No materials available</h6>
-                        <p className="text-muted small">Materials will be added soon.</p>
+                    {(!materials.length && !subjects.length) && (
+                      <div className="text-center py-5" style={{ color: '#cbd5e1' }}>
+                        <FileText size={48} className="mb-3" style={{ color: '#00ff7f', opacity: 0.5 }} />
+                        <h6>No materials available</h6>
+                        <p className="small">Materials will be added soon.</p>
                       </div>
                     )}
                   </div>
                 )}
 
                 {activeTab === 'preview' && (
-                  <div className="glass-card p-4 rounded-3">
-                    <h5 className="fw-bold mb-3">Bundle Preview</h5>
-                    <div className="row g-3">
-                      <div className="col-md-6">
-                        <h6 className="fw-semibold text-primary">What's Included:</h6>
-                        <ul className="list-unstyled">
-                          {features.map((feature, index) => (
-                            <li key={index} className="d-flex align-items-center mb-2">
-                              <CheckCircle size={16} className="text-success me-2" />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="col-md-6">
-                        <h6 className="fw-semibold text-primary">Bundle Stats:</h6>
-                        <div className="row g-2">
-                          <div className="col-6">
-                            <div className="text-center p-2 bg-light rounded">
-                              <div className="fw-bold">{(materials.length || subjects.length) + (bundle.files ? bundle.files.length : 0)}</div>
-                              <small className="text-muted">Materials</small>
-                            </div>
-                          </div>
-                          <div className="col-6">
-                            <div className="text-center p-2 bg-light rounded">
-                              <div className="fw-bold">PDF</div>
-                              <small className="text-muted">Format</small>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="text-center py-5" style={{ color: '#cbd5e1' }}>
+                    <Play size={48} className="mb-3" style={{ color: '#00ff7f', opacity: 0.5 }} />
+                    <h6>Preview Coming Soon</h6>
+                    <p className="small">Preview functionality will be available soon.</p>
                   </div>
                 )}
 
                 {activeTab === 'reviews' && (
-                  <div className="glass-card p-4 rounded-3">
-                    <h5 className="fw-bold mb-3">Student Reviews</h5>
-                    <div className="text-center py-4">
-                      <Star size={48} className="text-muted mb-3" />
-                      <h6 className="text-muted">Reviews coming soon</h6>
-                      <p className="text-muted small">Be the first to review this bundle!</p>
-                    </div>
+                  <div className="text-center py-5" style={{ color: '#cbd5e1' }}>
+                    <Star size={48} className="mb-3" style={{ color: '#00ff7f', opacity: 0.5 }} />
+                    <h6>Reviews Coming Soon</h6>
+                    <p className="small">Student reviews will be displayed here.</p>
                   </div>
                 )}
               </div>
@@ -499,177 +693,113 @@ const BundleDetailView = ({
 
           {/* Sidebar */}
           <div className="col-lg-4">
-            <div className="sticky-top" style={{ top: '120px' }}>
-              <div className="rounded-4 overflow-hidden shadow-lg" style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }}>
-                <div className="p-4">
-                  <h4 className="fw-bold mb-4" style={{
-                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
+            <div className="sticky-top" style={{ top: '2rem' }}>
+              {/* Access Status Card */}
+              {!hasAccess || isExpired ? (
+                <div className="mb-4 p-4 rounded-4" style={{
+                  background: 'rgba(15, 20, 40, 0.7)',
+                  border: '2px solid rgba(108, 117, 125, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 20px 40px rgba(108, 117, 125, 0.2)'
+                }}>
+                  <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>
+                    {isExpired ? 'Access Expired' : 'Access Required'}
+                  </h6>
+                  <p className="mb-3" style={{ color: '#cbd5e1', fontSize: '0.9rem' }}>
+                    {isExpired 
+                      ? 'Your access to this bundle has expired. Contact your administrator to renew access.'
+                      : 'This content is available through institutional access only. Contact your administrator to request access.'
+                    }
+                  </p>
+                  <div className="d-flex align-items-center p-3 rounded-3 mb-3" style={{
+                    background: 'rgba(108, 117, 125, 0.1)',
+                    border: '1px solid rgba(108, 117, 125, 0.2)'
                   }}>
-                    Quick Actions
-                  </h4>
-
-                      {showPaymentForm ? (
-                    <PaymentForm
-                      amount={bundle.price}
-                      onPaymentSuccess={() => {
-                        setIsPaid(true);
-                        setShowPaymentForm(false);
-                        toast.success('Payment successful — PDFs unlocked');
-                      }}
-                      onSuccess={() => {
-                        setIsPaid(true);
-                        setShowPaymentForm(false);
-                        toast.success('Payment successful — PDFs unlocked');
-                      }}
-                      onCancel={() => setShowPaymentForm(false)}
-                    />
-                  ) : (
-                    <>
-                      {bundle.price === 0 ? (
-                        <button
-                          className="btn btn-lg w-100 mb-4 rounded-pill shadow-sm"
-                          onClick={() => onDownload(bundle)}
-                          style={{
-                            background: 'linear-gradient(135deg, #28a745, #20c997)',
-                            border: 'none',
-                            color: 'white',
-                            fontWeight: '600',
-                            padding: '0.875rem 1.5rem',
-                            transition: 'all 0.3s ease',
-                            transform: 'translateY(0)'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                        >
-                          <CircleArrowDown size={20} className="me-2" />
-                          Download Free
-                        </button>
-                      ) : (
-                        <button
-                          className="btn btn-lg w-100 mb-4 rounded-pill shadow-sm"
-                          onClick={() => setShowPaymentForm(true)}
-                          style={{
-                            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                            border: 'none',
-                            color: 'white',
-                            fontWeight: '600',
-                            padding: '0.875rem 1.5rem',
-                            transition: 'all 0.3s ease',
-                            transform: 'translateY(0)'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                        >
-                          Buy Now - ₹{bundle.price}
-                        </button>
-                      )}
-
-                      {isPaid && bundle.price > 0 && (
-                        <button
-                          className="btn btn-lg w-100 mb-4 rounded-pill shadow-sm"
-                          onClick={() => onDownload(bundle)}
-                          style={{
-                            background: 'linear-gradient(135deg, #28a745, #20c997)',
-                            border: 'none',
-                            color: 'white',
-                            fontWeight: '600',
-                            padding: '0.875rem 1.5rem',
-                            transition: 'all 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-                          onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-                        >
-                          <CircleArrowDown size={20} className="me-2" />
-                          Download Bundle
-                        </button>
-                      )}
-
-                      <div className="d-grid gap-3 mb-4">
-                        <button
-                          className="btn btn-outline-primary rounded-pill d-flex align-items-center justify-content-center"
-                          style={{
-                            padding: '0.75rem 1rem',
-                            border: '2px solid rgba(102, 126, 234, 0.3)',
-                            transition: 'all 0.18s ease'
-                          }}
-                          onClick={() => setPreviewOpen(true)}
-                        >
-                          <Play size={18} className="me-2" />
-                          Preview Sample
-                        </button>
-                        <button
-                          className="btn btn-outline-secondary rounded-pill d-flex align-items-center justify-content-center"
-                          style={{
-                            padding: '0.75rem 1rem',
-                            border: '2px solid rgba(108, 117, 125, 0.3)',
-                            transition: 'all 0.18s ease'
-                          }}
-                          onClick={() => navigator.share ? navigator.share({ title: bundle.title, text: bundle.description, url: window.location.href }) : toast.info('Share your bundle link')}
-                        >
-                          <Share2 size={18} className="me-2" />
-                          Share Bundle
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="border-top pt-4" style={{ borderColor: 'rgba(0, 0, 0, 0.06) !important' }}>
-                    <h6 className="fw-bold mb-3" style={{ color: '#1a365d' }}>Bundle Details</h6>
-                    <div className="d-flex flex-column gap-3">
-                      <div className="d-flex justify-content-between align-items-center p-2 rounded-3" style={{ background: 'rgba(26,54,93,0.03)' }}>
-                        <span className="small" style={{ color: '#6c757d' }}>Category</span>
-                        <span className="fw-semibold small" style={{ color: '#1a365d' }}>{bundle.departmentName}</span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center p-2 rounded-3" style={{ background: 'rgba(26,54,93,0.03)' }}>
-                        <span className="small" style={{ color: '#6c757d' }}>Materials</span>
-                        <span className="fw-semibold small" style={{ color: '#1a365d' }}>{(materials.length || subjects.length) + (bundle.files ? bundle.files.length : 0)}</span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center p-2 rounded-3" style={{ background: 'rgba(26,54,93,0.03)' }}>
-                        <span className="small" style={{ color: '#6c757d' }}>Access</span>
-                        <span className="fw-semibold small" style={{ color: '#1a365d' }}>Lifetime</span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center p-2 rounded-3" style={{ background: 'rgba(26,54,93,0.03)' }}>
-                        <span className="small" style={{ color: '#6c757d' }}>Support</span>
-                        <span className="fw-semibold small" style={{ color: '#1a365d' }}>24/7</span>
-                      </div>
+                    <Users size={20} className="me-3" style={{ color: '#6c757d' }} />
+                    <div>
+                      <div className="fw-semibold" style={{ color: '#ffffff', fontSize: '0.9rem' }}>Institutional Content</div>
+                      <small style={{ color: '#cbd5e1' }}>Managed by administrators</small>
                     </div>
                   </div>
+                  
+                  {/* Request Access Button */}
+                  <button
+                    className="btn w-100 py-3 fw-bold"
+                    onClick={handleRequestAccess}
+                    disabled={isRequestingAccess}
+                    style={{
+                      background: isRequestingAccess 
+                        ? 'rgba(255, 193, 7, 0.5)' 
+                        : 'linear-gradient(135deg, #ffc107 0%, #ff8c00 100%)',
+                      border: 'none',
+                      color: '#0b0c10',
+                      borderRadius: '0.75rem',
+                      fontSize: '1.1rem',
+                      boxShadow: isRequestingAccess ? 'none' : '0 4px 16px rgba(255, 193, 7, 0.3)',
+                      opacity: isRequestingAccess ? 0.7 : 1
+                    }}
+                  >
+                    {isRequestingAccess ? (
+                      <>
+                        <div className="spinner-border spinner-border-sm me-2" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                        Requesting Access...
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus size={20} className="me-2" />
+                        Request Access
+                      </>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <div className="mb-4 p-4 rounded-4" style={{
+                  background: 'rgba(15, 20, 40, 0.7)',
+                  border: '2px solid rgba(0, 255, 127, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 20px 40px rgba(0, 255, 127, 0.2)'
+                }}>
+                  <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Access Granted</h6>
+                  <div className="d-flex align-items-center p-3 rounded-3 mb-3" style={{
+                    background: 'rgba(0, 255, 127, 0.1)',
+                    border: '1px solid rgba(0, 255, 127, 0.2)'
+                  }}>
+                    <CheckCircle size={20} className="me-3" style={{ color: '#00ff7f' }} />
+                    <div>
+                      <div className="fw-semibold" style={{ color: '#ffffff', fontSize: '0.9rem' }}>Full Access</div>
+                      <small style={{ color: '#cbd5e1' }}>
+                        Valid until {new Date(userAccess.expiryDate).toLocaleDateString()}
+                      </small>
+                    </div>
+                  </div>
+                  {userAccess?.grantedBy && (
+                    <p className="mb-0" style={{ color: '#cbd5e1', fontSize: '0.8rem' }}>
+                      Granted by: {userAccess.grantedBy}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Features */}
+              <div className="p-4 rounded-4" style={{
+                background: 'rgba(15, 20, 40, 0.7)',
+                border: '1px solid rgba(0, 255, 127, 0.2)',
+                backdropFilter: 'blur(10px)'
+              }}>
+                <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>What's Included</h6>
+                <div className="space-y-3">
+                  {features.map((feature, index) => (
+                    <div key={index} className="d-flex align-items-center mb-2">
+                      <CheckCircle size={16} className="me-3" style={{ color: '#00ff7f' }} />
+                      <small style={{ color: '#cbd5e1' }}>{feature}</small>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Lightweight preview modal used by BundleDetailView
-const PreviewModal = ({ open, onClose, bundle }) => {
-  if (!open) return null;
-  return (
-    <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ zIndex: 1060, background: 'rgba(10,10,10,0.5)' }}>
-      <div className="bg-white rounded-4 shadow-lg p-4" style={{ width: 'min(900px, 95%)', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div className="d-flex justify-content-between align-items-start mb-3">
-          <h5 className="fw-bold mb-0">Preview — {bundle.title || bundle.name}</h5>
-          <button className="btn btn-sm btn-light" onClick={onClose}><X /></button>
-        </div>
-        <div>
-          <p className="text-muted">{bundle.description}</p>
-          <hr />
-          <div className="ratio ratio-16x9 bg-light rounded overflow-hidden">
-            <div className="d-flex align-items-center justify-content-center h-100 w-100">
-              <Play size={40} className="text-muted" />
-            </div>
-          </div>
-          <small className="text-muted d-block mt-3">This is a sample preview. For a real preview, replace with an embedded PDF or video sample.</small>
         </div>
       </div>
     </div>

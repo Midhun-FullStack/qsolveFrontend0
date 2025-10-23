@@ -1,43 +1,37 @@
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 import FeaturedBundles from './FeaturedBundles';
+import TestimonialsSection from './TestimonialsSection';
+import Hero from './Hero';
+import { fetchBundles } from '../store/slices/dataSlice';
 
-import CTASection from './CTASection';
-
-
-const HomePage = ({ subjects, bundles = [], user }) => {
+const HomePage = () => {
+  const { bundles, loading } = useSelector(state => state.data);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Fetch bundles if not already loaded
+  useEffect(() => {
+    if (!bundles || bundles.length === 0) {
+      dispatch(fetchBundles());
+    }
+  }, [bundles, dispatch]);
 
   const handleBundleClick = (bundle) => {
     navigate(`/study-materials?bundle=${bundle.id || bundle._id}`);
-    toast.info(`Viewing ${bundle.name}`);
-  };
-
-  const handleViewAllMaterials = () => {
-    navigate('/study-materials');
-    toast.success('Exploring all study materials');
-  };
-
-  const handleGetStarted = () => {
-    if (user) {
-      navigate('/study-materials');
-    } else {
-      navigate('/auth');
-      toast.info('Please sign in to get started');
-    }
   };
 
   return (
-    <div className="homepage-modern">
-      
-      <FeaturedBundles 
-        bundles={bundles} 
-        onBundleClick={handleBundleClick} 
+    <div>
+      <Hero />
+      <FeaturedBundles
+        bundles={bundles}
+        onBundleClick={handleBundleClick}
+        loading={loading}
       />
-      <CTASection onViewAllMaterials={handleViewAllMaterials} />
-      
-       
+      <TestimonialsSection />
     </div>
   );
 };

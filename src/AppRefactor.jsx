@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-
 
 // Import components
 import SplashScreen from './components/SplashScreen';
@@ -15,8 +15,8 @@ import SubjectPage from './components/SubjectPage';
 import StudyMaterials from './components/StudyMaterials';
 import PDFDownload from './components/PDFDownload';
 import ApiTest from './components/ApiTest';
-import ProfilePage from './components/ProfilePage';
-import AboutPage from './components/AboutPage';
+import ProfilePage from './components/ProfilePageRedesigned';
+import AboutPage from './components/AboutPageRedesigned';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -24,9 +24,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import PublicLayout from './layouts/PublicLayout';
 import MainLayout from './layouts/MainLayout';
 
-// Import hooks
-import { useAuth } from './hooks/useAuth';
-import { useData } from './hooks/useData';
+// Import Redux actions
+import { initializeAuth, loginUser, registerUser, logoutUser } from './store/slices/authSlice';
+import { fetchSubjects, fetchBundles, fetchQuestionBanks, fetchQuestionBanksBySubject } from './store/slices/dataSlice';
 
 // Splash Screen with auto-redirect
 const SplashScreenWrapper = () => {
@@ -54,16 +54,39 @@ const LandingPageWrapper = () => {
 };
 
 function QSolveApp() {
-  const {
-    user,
-    isAuthenticated,
-    loading: authLoading,
-    login,
-    register,
-    logout
-  } = useAuth();
+  const dispatch = useDispatch();
+  const { user, isAuthenticated, loading: authLoading } = useSelector(state => state.auth);
+  const { subjects, bundles, questionBanks } = useSelector(state => state.data);
 
-  const { subjects, bundles, questionBanks, fetchQuestionBanksBySubject } = useData(isAuthenticated);
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Always fetch bundles for homepage display
+    dispatch(fetchBundles());
+    
+    if (isAuthenticated) {
+      dispatch(fetchSubjects());
+      dispatch(fetchQuestionBanks());
+    }
+  }, [isAuthenticated, dispatch]);
+
+  const login = async (credentials) => {
+    return dispatch(loginUser(credentials));
+  };
+
+  const register = async (userData) => {
+    return dispatch(registerUser(userData));
+  };
+
+  const logout = () => {
+    dispatch(logoutUser());
+  };
+
+  const fetchQuestionBanksBySubjectHandler = (subjectID) => {
+    return dispatch(fetchQuestionBanksBySubject(subjectID));
+  };
 
   return (
     <BrowserRouter>
@@ -90,8 +113,8 @@ function QSolveApp() {
 
           <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} loading={authLoading} />}>
             <Route element={<MainLayout user={user} onLogout={logout} />}>
-              <Route path="/home" element={<HomePage subjects={subjects} bundles={bundles} user={user} />} />
-              <Route path="/subject/:subjectId" element={<SubjectPage questionBanks={questionBanks} fetchQuestionBanksBySubject={fetchQuestionBanksBySubject} />} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/subject/:subjectId" element={<SubjectPage questionBanks={questionBanks} fetchQuestionBanksBySubject={fetchQuestionBanksBySubjectHandler} />} />
               <Route path="/study-materials" element={<StudyMaterials user={user} />} />
               <Route path="/pdf-downloads" element={<PDFDownload />} />
               <Route path="/api-test" element={<ApiTest />} />

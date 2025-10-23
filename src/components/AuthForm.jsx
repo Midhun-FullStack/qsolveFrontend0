@@ -3,6 +3,74 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Mail, LockKeyhole, EyeOff, Eye, User, ChevronLeft } from 'lucide-react';
 
+// Add this CSS directly in the component file or in a separate .css file
+const styles = `
+  .container-fluid {
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .card {
+    background: #1a1a1a !important;
+    border: 1px solid #2a2a2a !important;
+  }
+
+  .form-label, .card-title, .text-dark {
+    color: #ffffff !important;
+  }
+
+  .form-control {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a3a !important;
+  }
+
+  .form-control::placeholder {
+    color: #aaaaaa !important;
+  }
+
+  .input-group-text {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border: 1px solid #3a3a3a !important;
+  }
+
+  .qsolve-btn-primary {
+    background-color: #00cc00 !important;
+    border-color: #00cc00 !important;
+    color: #ffffff !important;
+    transition: background-color 0.3s ease;
+  }
+
+  .qsolve-btn-primary:hover {
+    background-color: #00b300 !important;
+    border-color: #00b300 !important;
+  }
+
+  .btn-link {
+    color: #00cc00 !important;
+  }
+
+  .btn-link:hover {
+    color: #00b300 !important;
+  }
+
+  .invalid-feedback {
+    color: #ff4d4d !important;
+  }
+
+  .spinner-border {
+    border-color: #00cc00 !important;
+    border-right-color: transparent !important;
+  }
+`;
+
 const AuthForm = ({ formType, onSubmit }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -23,7 +91,6 @@ const AuthForm = ({ formType, onSubmit }) => {
       [name]: value
     }));
     
-    // Clear validation error when user starts typing
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -117,171 +184,169 @@ const AuthForm = ({ formType, onSubmit }) => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-primary">
-      <div className="row w-100 justify-content-center">
-        <div className="col-md-6 col-lg-4">
-          <div className="card shadow-lg border-0">
-            <div className="card-body p-4 rounded bg-white text-dark">
-              <button 
-                type="button" 
-                className="btn btn-link p-0 mb-3 text-decoration-none"
-                onClick={handleBack}
-              >
-                <ChevronLeft size={20} className="me-1" />
-                Back
-              </button>
-              
-              <div className="text-center mb-4">
-                <h2 className="mb-2" style={{ color: 'black', fontFamily: 'Space Grotesk, Inter, sans-serif', fontWeight: 700, fontSize: '1.75rem' }}>Q SOLVE</h2>
-                <h4 className="card-title">{getFormTitle()}</h4>
-              </div>
-
-
-              <form onSubmit={handleSubmit}>
-                {formType === 'register' && (
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Full Name</label>
-                    <div className="input-group">
-                      <span className="input-group-text">
-                        <User size={18} />
-                      </span>
-                      <input
-                        type="text"
-                        className={`form-control ${validationErrors.name ? 'is-invalid' : ''} bg-white`}
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Enter your full name"
-                        style={{ color: 'black' }}
-                      />
-                      {validationErrors.name && (
-                        <div className="invalid-feedback">{validationErrors.name}</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <Mail size={18} />
-                    </span>
-                    <input
-                      type="email"
-                      className={`form-control ${validationErrors.email ? 'is-invalid' : ''} bg-white`}
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter your email"
-                      style={{ color: 'black' }}
-                    />
-                    {validationErrors.email && (
-                      <div className="invalid-feedback">{validationErrors.email}</div>
-                    )}
-                  </div>
+    <>
+      <style>{styles}</style>
+      <div className="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div className="row w-100 justify-content-center">
+          <div className="col-md-6 col-lg-4">
+            <div className="card shadow-lg border-0">
+              <div className="card-body p-4 rounded">
+                <button 
+                  type="button" 
+                  className="btn btn-link p-0 mb-3 text-decoration-none"
+                  onClick={handleBack}
+                >
+                  <ChevronLeft size={20} className="me-1" />
+                  Back
+                </button>
+                
+                <div className="text-center mb-4">
+                  <h2 className="mb-2" style={{ color: '#ffffff', fontFamily: 'Space Grotesk, Inter, sans-serif', fontWeight: 700, fontSize: '1.75rem' }}>Q SOLVE</h2>
+                  <h4 className="card-title">{getFormTitle()}</h4>
                 </div>
 
-                {formType !== 'forgot-password' && formType !== 'verification' && (
+                <form onSubmit={handleSubmit}>
+                  {formType === 'register' && (
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">Full Name</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <User size={18} />
+                        </span>
+                        <input
+                          type="text"
+                          className={`form-control ${validationErrors.name ? 'is-invalid' : ''}`}
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          placeholder="Enter your full name"
+                        />
+                        {validationErrors.name && (
+                          <div className="invalid-feedback">{validationErrors.name}</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
+                    <label htmlFor="email" className="form-label">Email</label>
                     <div className="input-group">
                       <span className="input-group-text">
-                        <LockKeyhole size={18} />
+                        <Mail size={18} />
                       </span>
                       <input
-                        type={showPassword ? 'text' : 'password'}
-                        className={`form-control ${validationErrors.password ? 'is-invalid' : ''} bg-white`}
-                        id="password"
-                        name="password"
-                        value={formData.password}
+                        type="email"
+                        className={`form-control ${validationErrors.email ? 'is-invalid' : ''}`}
+                        id="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        placeholder="Enter your password"
-                        style={{ color: 'black' }}
+                        placeholder="Enter your email"
                       />
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                      {validationErrors.password && (
-                        <div className="invalid-feedback">{validationErrors.password}</div>
+                      {validationErrors.email && (
+                        <div className="invalid-feedback">{validationErrors.email}</div>
                       )}
                     </div>
                   </div>
-                )}
 
-                {formType === 'register' && (
-                  <div className="mb-3">
-                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                    <div className="input-group">
-                      <span className="input-group-text">
-                        <LockKeyhole size={18} />
-                      </span>
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        className={`form-control ${validationErrors.confirmPassword ? 'is-invalid' : ''} bg-white`}
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        placeholder="Confirm your password"
-                        style={{ color: 'black' }}
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                      {validationErrors.confirmPassword && (
-                        <div className="invalid-feedback">{validationErrors.confirmPassword}</div>
-                      )}
+                  {formType !== 'forgot-password' && formType !== 'verification' && (
+                    <div className="mb-3">
+                      <label htmlFor="password" className="form-label">Password</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <LockKeyhole size={18} />
+                        </span>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          className={`form-control ${validationErrors.password ? 'is-invalid' : ''}`}
+                          id="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="Enter your password"
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                        {validationErrors.password && (
+                          <div className="invalid-feedback">{validationErrors.password}</div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div className="d-grid">
-                  <button
-                    type="submit"
-                    className="btn qsolve-btn-primary"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Loading...
-                      </>
-                    ) : (
-                      getSubmitButtonText()
-                    )}
-                  </button>
-                </div>
-              </form>
+                  {formType === 'register' && (
+                    <div className="mb-3">
+                      <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <LockKeyhole size={18} />
+                        </span>
+                        <input
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          className={`form-control ${validationErrors.confirmPassword ? 'is-invalid' : ''}`}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          placeholder="Confirm your password"
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                        {validationErrors.confirmPassword && (
+                          <div className="invalid-feedback">{validationErrors.confirmPassword}</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
-              {formType === 'login' && (
-                <div className="text-center mt-3">
-                  <small>
-                    <button 
-                      type="button"
-                      className="btn btn-link p-0 text-decoration-none"
-                      onClick={() => navigate('/forgot-password')}
+                  <div className="d-grid">
+                    <button
+                      type="submit"
+                      className="btn qsolve-btn-primary"
+                      disabled={loading}
                     >
-                      Forgot Password?
+                      {loading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Loading...
+                        </>
+                      ) : (
+                        getSubmitButtonText()
+                      )}
                     </button>
-                  </small>
-                </div>
-              )}
+                  </div>
+                </form>
+
+                {formType === 'login' && (
+                  <div className="text-center mt-3">
+                    <small>
+                      <button 
+                        type="button"
+                        className="btn btn-link p-0 text-decoration-none"
+                        onClick={() => navigate('/forgot-password')}
+                      >
+                        Forgot Password?
+                      </button>
+                    </small>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

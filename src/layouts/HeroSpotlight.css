@@ -1,0 +1,98 @@
+/* Hero Spotlight Section */
+.hero-spotlight {
+  position: relative;
+  background-color: transparent; /* Transparent to show homepage background */
+  color: #070202;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif; /* Futuristic font for technical vibe */
+  overflow: hidden;
+}
+
+/* Hero Content */
+.hero-content {
+  max-width: 800px;
+  padding: 20px;
+  position: relative;
+  z-index: 10; /* Higher than circuit-overlay and homepage background */
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.hero-text {
+  font-family: 'Roboto', sans-serif; /* Clean secondary font */
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #a1a1a1; /* Slightly lighter for contrast */
+}
+
+/* CTA Button with Green Accent */
+.cta-button {
+  background-color: #1b941b; /* Bright green accent */
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  color:aqua
+}
+
+.cta-button:hover {
+  background-color: #00cc00; /* Darker green on hover */
+  transform: scale(1.05);
+}
+
+/* Circuit Overlay with Animation */
+.circuit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/circuit-board.png') repeat;
+  opacity: 0.15; /* Slightly increased opacity for visibility */
+  z-index: 2; /* Above homepage background, below hero content */
+  animation: circuitFlow 20s linear infinite; /* Animation applied */
+}
+
+/* Keyframes for Circuit Animation */
+@keyframes circuitFlow {
+  0% {
+    background-position: 0 0;
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.25; /* Subtle pulse effect */
+  }
+  100% {
+    background-position: 200px 200px; /* Diagonal scroll for flow effect */
+    opacity: 0.15;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-text {
+    font-size: 1rem;
+  }
+
+  .cta-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}

@@ -7,13 +7,27 @@ const config = {
   build: {
     outDir: "dist",
     emptyOutDir: true,
-    sourcemap: true,
-    minify: false,
-    cssMinify: false,
-    terserOptions: { compress: false, mangle: false },
+    sourcemap: false, // Disable sourcemaps for better performance
+    minify: 'esbuild', // Enable minification
+    cssMinify: true, // Enable CSS minification
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['lucide-react', 'bootstrap']
+        }
+      }
+    }
   },
   define: { "process.env.NODE_ENV": "'development'" },
-  esbuild: { jsx: "automatic", jsxImportSource: "react" },
+  esbuild: { 
+    jsx: "automatic", 
+    jsxImportSource: "react",
+    target: 'es2020' // Better performance target
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'lucide-react', 'bootstrap']
+  },
   plugins: [
     react(),
     viteStaticCopy({

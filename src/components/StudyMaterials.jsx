@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { dataService } from '../services/dataService';
 import StudyMaterialsHero from './StudyMaterialsHero';
 import AdvancedFilters from './AdvancedFilters';
 import BundleGrid from './BundleGrid';
-import BundleDetailView from './BundleDetailView';
+import BundleDetailView from './BundleDetailViewRedesigned';
 
-const StudyMaterials = ({ user }) => {
-  const location = useLocation();
+const StudyMaterials = () => {
   const [searchParams] = useSearchParams();
-  const departmentParam = searchParams.get('department');
-  // State management
+  // Simplified state management
   const [bundles, setBundles] = useState([]);
   const [filteredBundles, setFilteredBundles] = useState([]);
   const [selectedBundle, setSelectedBundle] = useState(null);
@@ -21,50 +19,41 @@ const StudyMaterials = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showBundleDetail, setShowBundleDetail] = useState(false);
+
   const [bookmarkedBundles, setBookmarkedBundles] = useState([]);
-  const [startPayment, setStartPayment] = useState(false);
-  
-  // Filter state
+
+  const [userAccess, setUserAccess] = useState({}); // Store user access data for bundles
   const [filters, setFilters] = useState({
     category: '',
     priceRange: '',
     minRating: '',
     sortBy: 'popular'
   });
+  const [stats, setStats] = useState({ bundles: 0, downloads: 25, students: 10 });
 
-  // Stats for hero section
-  const [stats, setStats] = useState({
-    bundles: 0,
-    downloads: 25,
-    students: 10
-  });
-
-  // Fetch bundles on component mount
+  // Fetch bundles and user access on component mount
   useEffect(() => {
     fetchBundles();
+    fetchUserAccess();
   }, []);
 
-  // Set initial department filter from URL params
+  // Handle URL parameters
   useEffect(() => {
-    if (departmentParam && bundles.length > 0) {
-      const bundleWithDept = bundles.find(bundle => bundle.departmentID === departmentParam);
-      if (bundleWithDept) {
-        setFilters(prev => ({
-          ...prev,
-          category: bundleWithDept.departmentName
-        }));
-        toast.info(`Showing materials for ${bundleWithDept.departmentName}`);
-      }
-    }
-  }, [departmentParam, bundles]);
-
-  // Handle bundle parameter from URL (direct bundle view)
-  useEffect(() => {
+    const departmentParam = searchParams.get('department');
     const bundleParam = searchParams.get('bundle');
-    if (bundleParam && bundles.length > 0 && !selectedBundle) {
-      const bundleToShow = bundles.find(bundle => (bundle.id || bundle._id) === bundleParam);
-      if (bundleToShow) {
-        handleBundleSelect(bundleToShow);
+
+    if (bundles.length > 0) {
+      if (departmentParam) {
+        const bundleWithDept = bundles.find(bundle => bundle.departmentID === departmentParam);
+        if (bundleWithDept) {
+          setFilters(prev => ({ ...prev, category: bundleWithDept.departmentName }));
+          toast.info(`Showing materials for ${bundleWithDept.departmentName}`);
+        }
+      }
+
+      if (bundleParam && !selectedBundle) {
+        const bundleToShow = bundles.find(bundle => (bundle.id || bundle._id) === bundleParam);
+        if (bundleToShow) handleBundleSelect(bundleToShow);
       }
     }
   }, [searchParams, bundles, selectedBundle]);
@@ -74,13 +63,45 @@ const StudyMaterials = ({ user }) => {
     applyFilters();
   }, [bundles, searchTerm, filters]);
 
+  const fetchUserAccess = async () => {
+    try {
+      console.log('Fetching user access data...');
+      const accessData = await dataService.getUserAccess();
+      console.log('User access response:', accessData);
+
+      // Transform access data into a lookup object by bundle ID
+      const accessLookup = {};
+      if (Array.isArray(accessData)) {
+        accessData.forEach(access => {
+          if (access.bundleId) {
+            accessLookup[access.bundleId] = {
+              hasAccess: true,
+              expiryDate: access.expiryDate,
+              grantedBy: access.grantedBy,
+              grantedAt: access.grantedAt
+            };
+          }
+        });
+      }
+      setUserAccess(accessLookup);
+    } catch (error) {
+      console.error('Failed to fetch user access:', error);
+      // For demo purposes, create mock access data
+      const mockAccess = {
+        'mock-1': { hasAccess: true, expiryDate: '2025-12-31', grantedBy: 'Admin', grantedAt: '2024-01-01' },
+        'mock-3': { hasAccess: true, expiryDate: '2025-06-30', grantedBy: 'System', grantedAt: '2024-01-01' }
+      };
+      setUserAccess(mockAccess);
+    }
+  };
+
   const fetchBundles = async () => {
     setLoading(true);
     try {
       console.log('Fetching bundles...');
       const data = await dataService.getBundles();
       console.log('Bundles response:', data);
-      
+
       const transformedBundles = Array.isArray(data) ? data.map(bundle => ({
         id: bundle._id,
         title: bundle.title || `${bundle.departmentID?.department || 'Unknown'} Bundle`,
@@ -93,11 +114,11 @@ const StudyMaterials = ({ user }) => {
         rating: 4.5 + Math.random() * 0.5, // Mock rating
         description: bundle.description || `Comprehensive study materials for ${bundle.departmentID?.department || 'this subject'} with detailed explanations and practice questions.`
       })) : [];
-      
+
       console.log('Transformed bundles:', transformedBundles);
       setBundles(transformedBundles);
       setStats(prev => ({ ...prev, bundles: transformedBundles.length }));
-      
+
       if (transformedBundles.length === 0) {
         // Fallback to mock data for demo
         const mockBundles = [
@@ -241,25 +262,25 @@ const StudyMaterials = ({ user }) => {
   const handleBundleSelect = async (bundle) => {
     setSelectedBundle(bundle);
     setLoading(true);
-    
+
     try {
       console.log('Fetching bundle details for:', bundle);
-      
+
       // Fetch products/PDFs for this bundle's department
       const productsData = await dataService.getPdfsByDepartment(bundle.departmentID);
       console.log('Products data:', productsData);
       setBundleProducts(productsData.products || []);
-      
+
       // Fetch subjects for this bundle's department
       const subjectsData = await dataService.getSubjectsByDepartment(bundle.departmentID);
       console.log('Subjects data:', subjectsData);
       setBundleSubjects(Array.isArray(subjectsData) ? subjectsData : []);
-      
+
       setShowBundleDetail(true);
       toast.success(`Loaded materials for ${bundle.title}`);
     } catch (error) {
       console.error('Failed to fetch bundle details:', error);
-      
+
       // Set mock data for demo
       const mockSubjects = [
         {
@@ -292,6 +313,21 @@ const StudyMaterials = ({ user }) => {
   };
 
   const handleDownload = async (material) => {
+    // Check if user has access to the selected bundle
+    const bundleId = selectedBundle?.id || selectedBundle?._id;
+    const access = userAccess[bundleId];
+
+    if (!access?.hasAccess) {
+      toast.error('Access required to download materials');
+      return;
+    }
+
+    // Check if access has expired
+    if (access.expiryDate && new Date(access.expiryDate) < new Date()) {
+      toast.error('Your access has expired. Contact administrator to renew.');
+      return;
+    }
+
     const getUrl = (m) => m?.fileUrl || m?.url || m?.path || m?.file?.url || m?.file?.path || null;
     const getName = (m, idx = 0) => {
       return (m?.originalName || m?.filename || m?.title || m?.subject || `download-${idx + 1}`).replace(/[^a-zA-Z0-9.\- _]/g, '_');
@@ -367,12 +403,11 @@ const StudyMaterials = ({ user }) => {
     }
   };
 
-  const handlePurchase = (bundle) => {
-    // Open bundle detail and start payment flow
+  const handleViewAccess = (bundle) => {
+    // Show access information instead of purchase
     setSelectedBundle(bundle);
     setShowBundleDetail(true);
-    setStartPayment(true);
-    toast.info(`Starting purchase for ${bundle.title}`);
+    toast.info(`Viewing access details for ${bundle.title}`);
   };
 
   const handleBookmarkToggle = (bundle) => {
@@ -405,6 +440,34 @@ const StudyMaterials = ({ user }) => {
     setSearchTerm('');
   };
 
+  const handleRequestAccess = async (bundle) => {
+    try {
+      console.log('Submitting access request for bundle:', bundle);
+
+      // Submit the access request directly using user's stored details
+      const requestData = {
+        bundleId: bundle.id || bundle._id,
+        bundleName: bundle.title || bundle.name,
+        requestedAt: new Date().toISOString()
+      };
+
+      await dataService.submitAccessRequest(requestData);
+
+      toast.success(`Access request submitted for ${bundle.title || bundle.name}. You'll receive an email confirmation shortly.`);
+    } catch (error) {
+      console.error('Failed to submit access request:', error);
+      if (error.response?.status === 409) {
+        toast.warning('You have already requested access to this bundle. Please wait for admin approval.');
+      } else if (error.response?.status === 401) {
+        toast.error('Please log in to request access to study materials.');
+      } else {
+        toast.error('Failed to submit access request. Please try again.');
+      }
+    }
+  };
+
+
+
   return (
     <div className="study-materials-modern">
       {/* Hero Section */}
@@ -430,9 +493,11 @@ const StudyMaterials = ({ user }) => {
         loading={loading}
         onBundleSelect={handleBundleSelect}
         onBundlePreview={handleBundlePreview}
-        onPurchase={handlePurchase}
+        onViewAccess={handleViewAccess}
+        onRequestAccess={handleRequestAccess}
         onBookmarkToggle={handleBookmarkToggle}
         bookmarkedBundles={bookmarkedBundles}
+        userAccess={userAccess}
       />
 
       {/* Bundle Detail View */}
@@ -443,11 +508,14 @@ const StudyMaterials = ({ user }) => {
         materials={bundleProducts}
         subjects={bundleSubjects}
         onDownload={handleDownload}
-        onPurchase={handlePurchase}
-        startPayment={startPayment}
-        onPaymentStarted={() => setStartPayment(false)}
+        onBookmarkToggle={handleBookmarkToggle}
+        isBookmarked={selectedBundle && bookmarkedBundles.includes(selectedBundle.id || selectedBundle._id)}
+        userAccess={selectedBundle ? userAccess[selectedBundle.id || selectedBundle._id] : null}
+        onRequestAccess={handleRequestAccess}
         loading={loading}
       />
+
+
     </div>
   );
 };
